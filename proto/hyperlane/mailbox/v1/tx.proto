@@ -13,14 +13,16 @@ import "cosmos_proto/cosmos.proto";
 service Msg {
   option (cosmos.msg.v1.service) = true;
 
-  // IncrementCounter increments the counter.
   rpc CreateMailbox(MsgCreateMailbox) returns (MsgCreateMailboxResponse);
+
+  rpc DispatchMessage(MsgDispatchMessage) returns (MsgDispatchMessageResponse);
+
+  rpc ProcessMessage(MsgProcessMessage) returns (MsgProcessMessageResponse);
 
   // UpdateParams updates the module parameters.
   rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
 }
 
-// MsgIncrementCounter defines the Msg/IncrementCounter request type.
 message MsgCreateMailbox {
   option (cosmos.msg.v1.signer) = "creator";
   option (amino.name) = "hyperlane/mailbox/MsgCreateMailbox";
@@ -30,8 +32,37 @@ message MsgCreateMailbox {
   string ism = 2;
 }
 
-// MsgIncrementCounterResponse defines the Msg/IncrementCounter response type.
 message MsgCreateMailboxResponse {}
+
+message MsgDispatchMessage {
+  option (cosmos.msg.v1.signer) = "sender";
+  option (amino.name) = "hyperlane/mailbox/MsgDispatchMessage";
+
+  // TODO: Check types
+  string mailbox_id = 1;
+  string sender = 2 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  uint32 destination = 3;
+  // TODO: Determine how this should look like to make it EVM-compatible.
+  // Hex encoded
+  // TODO: Use bytes
+  string recipient = 4;
+  string body = 5;
+}
+
+message MsgDispatchMessageResponse {
+  string message_id = 1;
+}
+
+message MsgProcessMessage {
+  option (cosmos.msg.v1.signer) = "sender";
+  option (amino.name) = "hyperlane/mailbox/MsgProcessMessage";
+
+  string metadata = 1;
+  string message = 2;
+  string sender = 3 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+}
+
+message MsgProcessMessageResponse {}
 
 // MsgUpdateParams is the Msg/UpdateParams request type.
 message MsgUpdateParams {

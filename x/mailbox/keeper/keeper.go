@@ -1,12 +1,11 @@
 package keeper
 
 import (
-	"fmt"
-	"github.com/KYVENetwork/hyperlane-cosmos/x/mailbox/types"
-
 	"cosmossdk.io/collections"
 	"cosmossdk.io/core/address"
 	storetypes "cosmossdk.io/core/store"
+	"fmt"
+	"github.com/KYVENetwork/hyperlane-cosmos/x/mailbox/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 )
 
@@ -19,8 +18,10 @@ type Keeper struct {
 	authority string
 
 	// state management
-	Schema collections.Schema
-	Params collections.Item[types.Params]
+	Mailboxes collections.Map[string, types.Mailbox]
+	Messages  collections.KeySet[collections.Pair[string, []byte]]
+	Params    collections.Item[types.Params]
+	Schema    collections.Schema
 }
 
 // NewKeeper creates a new Keeper instance
@@ -34,6 +35,8 @@ func NewKeeper(cdc codec.BinaryCodec, addressCodec address.Codec, storeService s
 		cdc:          cdc,
 		addressCodec: addressCodec,
 		authority:    authority,
+		Mailboxes:    collections.NewMap(sb, types.MailboxesKey, "mailboxes", collections.StringKey, codec.CollValue[types.Mailbox](cdc)),
+		Messages:     collections.NewKeySet(sb, types.MessagesKey, "messages", collections.PairKeyCodec(collections.StringKey, collections.BytesKey)),
 		Params:       collections.NewItem(sb, types.ParamsKey, "params", codec.CollValue[types.Params](cdc)),
 	}
 
@@ -45,9 +48,4 @@ func NewKeeper(cdc codec.BinaryCodec, addressCodec address.Codec, storeService s
 	k.Schema = schema
 
 	return k
-}
-
-// GetAuthority returns the module's authority.
-func (k Keeper) GetAuthority() string {
-	return k.authority
 }

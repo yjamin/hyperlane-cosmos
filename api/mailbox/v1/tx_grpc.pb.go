@@ -19,16 +19,19 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Msg_CreateMailbox_FullMethodName = "/hyperlane.mailbox.v1.Msg/CreateMailbox"
-	Msg_UpdateParams_FullMethodName  = "/hyperlane.mailbox.v1.Msg/UpdateParams"
+	Msg_CreateMailbox_FullMethodName   = "/hyperlane.mailbox.v1.Msg/CreateMailbox"
+	Msg_DispatchMessage_FullMethodName = "/hyperlane.mailbox.v1.Msg/DispatchMessage"
+	Msg_ProcessMessage_FullMethodName  = "/hyperlane.mailbox.v1.Msg/ProcessMessage"
+	Msg_UpdateParams_FullMethodName    = "/hyperlane.mailbox.v1.Msg/UpdateParams"
 )
 
 // MsgClient is the client API for Msg service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type MsgClient interface {
-	// IncrementCounter increments the counter.
 	CreateMailbox(ctx context.Context, in *MsgCreateMailbox, opts ...grpc.CallOption) (*MsgCreateMailboxResponse, error)
+	DispatchMessage(ctx context.Context, in *MsgDispatchMessage, opts ...grpc.CallOption) (*MsgDispatchMessageResponse, error)
+	ProcessMessage(ctx context.Context, in *MsgProcessMessage, opts ...grpc.CallOption) (*MsgProcessMessageResponse, error)
 	// UpdateParams updates the module parameters.
 	UpdateParams(ctx context.Context, in *MsgUpdateParams, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
 }
@@ -50,6 +53,24 @@ func (c *msgClient) CreateMailbox(ctx context.Context, in *MsgCreateMailbox, opt
 	return out, nil
 }
 
+func (c *msgClient) DispatchMessage(ctx context.Context, in *MsgDispatchMessage, opts ...grpc.CallOption) (*MsgDispatchMessageResponse, error) {
+	out := new(MsgDispatchMessageResponse)
+	err := c.cc.Invoke(ctx, Msg_DispatchMessage_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) ProcessMessage(ctx context.Context, in *MsgProcessMessage, opts ...grpc.CallOption) (*MsgProcessMessageResponse, error) {
+	out := new(MsgProcessMessageResponse)
+	err := c.cc.Invoke(ctx, Msg_ProcessMessage_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *msgClient) UpdateParams(ctx context.Context, in *MsgUpdateParams, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
 	out := new(MsgUpdateParamsResponse)
 	err := c.cc.Invoke(ctx, Msg_UpdateParams_FullMethodName, in, out, opts...)
@@ -63,8 +84,9 @@ func (c *msgClient) UpdateParams(ctx context.Context, in *MsgUpdateParams, opts 
 // All implementations must embed UnimplementedMsgServer
 // for forward compatibility
 type MsgServer interface {
-	// IncrementCounter increments the counter.
 	CreateMailbox(context.Context, *MsgCreateMailbox) (*MsgCreateMailboxResponse, error)
+	DispatchMessage(context.Context, *MsgDispatchMessage) (*MsgDispatchMessageResponse, error)
+	ProcessMessage(context.Context, *MsgProcessMessage) (*MsgProcessMessageResponse, error)
 	// UpdateParams updates the module parameters.
 	UpdateParams(context.Context, *MsgUpdateParams) (*MsgUpdateParamsResponse, error)
 	mustEmbedUnimplementedMsgServer()
@@ -76,6 +98,12 @@ type UnimplementedMsgServer struct {
 
 func (UnimplementedMsgServer) CreateMailbox(context.Context, *MsgCreateMailbox) (*MsgCreateMailboxResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateMailbox not implemented")
+}
+func (UnimplementedMsgServer) DispatchMessage(context.Context, *MsgDispatchMessage) (*MsgDispatchMessageResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DispatchMessage not implemented")
+}
+func (UnimplementedMsgServer) ProcessMessage(context.Context, *MsgProcessMessage) (*MsgProcessMessageResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ProcessMessage not implemented")
 }
 func (UnimplementedMsgServer) UpdateParams(context.Context, *MsgUpdateParams) (*MsgUpdateParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateParams not implemented")
@@ -111,6 +139,42 @@ func _Msg_CreateMailbox_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_DispatchMessage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgDispatchMessage)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).DispatchMessage(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_DispatchMessage_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).DispatchMessage(ctx, req.(*MsgDispatchMessage))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_ProcessMessage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgProcessMessage)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).ProcessMessage(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_ProcessMessage_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).ProcessMessage(ctx, req.(*MsgProcessMessage))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Msg_UpdateParams_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(MsgUpdateParams)
 	if err := dec(in); err != nil {
@@ -139,6 +203,14 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateMailbox",
 			Handler:    _Msg_CreateMailbox_Handler,
+		},
+		{
+			MethodName: "DispatchMessage",
+			Handler:    _Msg_DispatchMessage_Handler,
+		},
+		{
+			MethodName: "ProcessMessage",
+			Handler:    _Msg_ProcessMessage_Handler,
 		},
 		{
 			MethodName: "UpdateParams",

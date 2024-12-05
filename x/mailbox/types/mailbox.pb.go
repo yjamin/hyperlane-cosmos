@@ -5,6 +5,7 @@ package types
 
 import (
 	fmt "fmt"
+	_ "github.com/cosmos/cosmos-proto"
 	proto "github.com/cosmos/gogoproto/proto"
 	io "io"
 	math "math"
@@ -23,9 +24,12 @@ var _ = math.Inf
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 type Mailbox struct {
-	Id           int64  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
-	Ism          string `protobuf:"bytes,2,opt,name=ism,proto3" json:"ism,omitempty"`
-	MessageCount int64  `protobuf:"varint,3,opt,name=message_count,json=messageCount,proto3" json:"message_count,omitempty"`
+	// TODO: Should be bytes32
+	Id              string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Ism             string `protobuf:"bytes,2,opt,name=ism,proto3" json:"ism,omitempty"`
+	MessageSent     uint32 `protobuf:"varint,3,opt,name=message_sent,json=messageSent,proto3" json:"message_sent,omitempty"`
+	MessageReceived uint32 `protobuf:"varint,4,opt,name=message_received,json=messageReceived,proto3" json:"message_received,omitempty"`
+	Creator         string `protobuf:"bytes,5,opt,name=creator,proto3" json:"creator,omitempty"`
 }
 
 func (m *Mailbox) Reset()         { *m = Mailbox{} }
@@ -61,11 +65,11 @@ func (m *Mailbox) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Mailbox proto.InternalMessageInfo
 
-func (m *Mailbox) GetId() int64 {
+func (m *Mailbox) GetId() string {
 	if m != nil {
 		return m.Id
 	}
-	return 0
+	return ""
 }
 
 func (m *Mailbox) GetIsm() string {
@@ -75,15 +79,90 @@ func (m *Mailbox) GetIsm() string {
 	return ""
 }
 
-func (m *Mailbox) GetMessageCount() int64 {
+func (m *Mailbox) GetMessageSent() uint32 {
 	if m != nil {
-		return m.MessageCount
+		return m.MessageSent
 	}
 	return 0
 }
 
+func (m *Mailbox) GetMessageReceived() uint32 {
+	if m != nil {
+		return m.MessageReceived
+	}
+	return 0
+}
+
+func (m *Mailbox) GetCreator() string {
+	if m != nil {
+		return m.Creator
+	}
+	return ""
+}
+
+type MailboxMessage struct {
+	MailboxId string `protobuf:"bytes,1,opt,name=mailbox_id,json=mailboxId,proto3" json:"mailbox_id,omitempty"`
+	MessageId int64  `protobuf:"varint,2,opt,name=message_id,json=messageId,proto3" json:"message_id,omitempty"`
+	Received  bool   `protobuf:"varint,3,opt,name=received,proto3" json:"received,omitempty"`
+}
+
+func (m *MailboxMessage) Reset()         { *m = MailboxMessage{} }
+func (m *MailboxMessage) String() string { return proto.CompactTextString(m) }
+func (*MailboxMessage) ProtoMessage()    {}
+func (*MailboxMessage) Descriptor() ([]byte, []int) {
+	return fileDescriptor_1595523b0fd95f7d, []int{1}
+}
+func (m *MailboxMessage) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MailboxMessage) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MailboxMessage.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MailboxMessage) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MailboxMessage.Merge(m, src)
+}
+func (m *MailboxMessage) XXX_Size() int {
+	return m.Size()
+}
+func (m *MailboxMessage) XXX_DiscardUnknown() {
+	xxx_messageInfo_MailboxMessage.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MailboxMessage proto.InternalMessageInfo
+
+func (m *MailboxMessage) GetMailboxId() string {
+	if m != nil {
+		return m.MailboxId
+	}
+	return ""
+}
+
+func (m *MailboxMessage) GetMessageId() int64 {
+	if m != nil {
+		return m.MessageId
+	}
+	return 0
+}
+
+func (m *MailboxMessage) GetReceived() bool {
+	if m != nil {
+		return m.Received
+	}
+	return false
+}
+
 func init() {
 	proto.RegisterType((*Mailbox)(nil), "hyperlane.mailbox.v1.Mailbox")
+	proto.RegisterType((*MailboxMessage)(nil), "hyperlane.mailbox.v1.MailboxMessage")
 }
 
 func init() {
@@ -91,20 +170,28 @@ func init() {
 }
 
 var fileDescriptor_1595523b0fd95f7d = []byte{
-	// 204 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x52, 0xca, 0xa8, 0x2c, 0x48,
-	0x2d, 0xca, 0x49, 0xcc, 0x4b, 0xd5, 0xcf, 0x4d, 0xcc, 0xcc, 0x49, 0xca, 0xaf, 0xd0, 0x2f, 0x33,
-	0x84, 0x31, 0xf5, 0x0a, 0x8a, 0xf2, 0x4b, 0xf2, 0x85, 0x44, 0xe0, 0x6a, 0xf4, 0x60, 0x12, 0x65,
-	0x86, 0x4a, 0x01, 0x5c, 0xec, 0xbe, 0x10, 0x9e, 0x10, 0x1f, 0x17, 0x53, 0x66, 0x8a, 0x04, 0xa3,
-	0x02, 0xa3, 0x06, 0x73, 0x10, 0x53, 0x66, 0x8a, 0x90, 0x00, 0x17, 0x73, 0x66, 0x71, 0xae, 0x04,
-	0x93, 0x02, 0xa3, 0x06, 0x67, 0x10, 0x88, 0x29, 0xa4, 0xcc, 0xc5, 0x9b, 0x9b, 0x5a, 0x5c, 0x9c,
-	0x98, 0x9e, 0x1a, 0x9f, 0x9c, 0x5f, 0x9a, 0x57, 0x22, 0xc1, 0x0c, 0x56, 0xcc, 0x03, 0x15, 0x74,
-	0x06, 0x89, 0x39, 0x05, 0x9e, 0x78, 0x24, 0xc7, 0x78, 0xe1, 0x91, 0x1c, 0xe3, 0x83, 0x47, 0x72,
-	0x8c, 0x13, 0x1e, 0xcb, 0x31, 0x5c, 0x78, 0x2c, 0xc7, 0x70, 0xe3, 0xb1, 0x1c, 0x43, 0x94, 0x79,
-	0x7a, 0x66, 0x49, 0x46, 0x69, 0x92, 0x5e, 0x72, 0x7e, 0xae, 0xbe, 0x77, 0x64, 0x98, 0xab, 0x5f,
-	0x6a, 0x49, 0x79, 0x7e, 0x51, 0xb6, 0x3e, 0xdc, 0x61, 0xba, 0xc9, 0xf9, 0xc5, 0xb9, 0xf9, 0xc5,
-	0xfa, 0x15, 0x70, 0x5f, 0x94, 0x54, 0x16, 0xa4, 0x16, 0x27, 0xb1, 0x81, 0x7d, 0x60, 0x0c, 0x08,
-	0x00, 0x00, 0xff, 0xff, 0xa2, 0x58, 0xf3, 0x97, 0xe7, 0x00, 0x00, 0x00,
+	// 328 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x3c, 0x91, 0xc1, 0x4e, 0x02, 0x31,
+	0x10, 0x86, 0x29, 0xa8, 0x40, 0x55, 0x24, 0x0d, 0x87, 0x95, 0xc4, 0x0d, 0x72, 0xc2, 0x03, 0x6c,
+	0xd0, 0x83, 0x67, 0x49, 0x3c, 0x10, 0x83, 0x89, 0x25, 0x31, 0xd1, 0x0b, 0x59, 0xb6, 0x13, 0xa8,
+	0xb2, 0x5b, 0xd2, 0x56, 0x84, 0xb7, 0xf0, 0x45, 0xbc, 0xf9, 0x10, 0x1e, 0x89, 0x27, 0x8f, 0x06,
+	0x5e, 0xc4, 0xd0, 0xed, 0xf6, 0x36, 0xf3, 0xcf, 0xd7, 0xf6, 0xff, 0xa7, 0xb8, 0x39, 0x5d, 0xcd,
+	0x41, 0xce, 0xc2, 0x04, 0x82, 0x38, 0xe4, 0xb3, 0xb1, 0x58, 0x06, 0x8b, 0x6e, 0x56, 0x76, 0xe6,
+	0x52, 0x68, 0x41, 0x6a, 0x8e, 0xe9, 0x64, 0x83, 0x45, 0xb7, 0x7e, 0x1a, 0x09, 0x15, 0x0b, 0x35,
+	0x32, 0x4c, 0x90, 0x36, 0xe9, 0x81, 0xe6, 0x27, 0xc2, 0xc5, 0x41, 0x4a, 0x92, 0x0a, 0xce, 0x73,
+	0xe6, 0xa1, 0x06, 0x6a, 0x95, 0x69, 0x9e, 0x33, 0x52, 0xc5, 0x05, 0xae, 0x62, 0x2f, 0x6f, 0x84,
+	0x5d, 0x49, 0xce, 0xf1, 0x51, 0x0c, 0x4a, 0x85, 0x13, 0x18, 0x29, 0x48, 0xb4, 0x57, 0x68, 0xa0,
+	0xd6, 0x31, 0x3d, 0xb4, 0xda, 0x10, 0x12, 0x4d, 0x2e, 0x70, 0x35, 0x43, 0x24, 0x44, 0xc0, 0x17,
+	0xc0, 0xbc, 0x3d, 0x83, 0x9d, 0x58, 0x9d, 0x5a, 0x99, 0x5c, 0xe2, 0x62, 0x24, 0x21, 0xd4, 0x42,
+	0x7a, 0xfb, 0xbb, 0x37, 0x7a, 0xde, 0xcf, 0x57, 0xbb, 0x66, 0xed, 0xdd, 0x30, 0x26, 0x41, 0xa9,
+	0xa1, 0x96, 0x3c, 0x99, 0xd0, 0x0c, 0x6c, 0xbe, 0xe0, 0x8a, 0xb5, 0x3b, 0x48, 0x6f, 0x23, 0x67,
+	0x18, 0xdb, 0xa8, 0x23, 0xe7, 0xbe, 0x6c, 0x95, 0x3e, 0x33, 0x63, 0xeb, 0x87, 0x33, 0x93, 0xa5,
+	0x40, 0xcb, 0x56, 0xe9, 0x33, 0x52, 0xc7, 0x25, 0x67, 0x73, 0x97, 0xa6, 0x44, 0x5d, 0xdf, 0x7b,
+	0xf8, 0xde, 0xf8, 0x68, 0xbd, 0xf1, 0xd1, 0xdf, 0xc6, 0x47, 0x1f, 0x5b, 0x3f, 0xb7, 0xde, 0xfa,
+	0xb9, 0xdf, 0xad, 0x9f, 0x7b, 0xbe, 0x9e, 0x70, 0x3d, 0x7d, 0x1b, 0x77, 0x22, 0x11, 0x07, 0x77,
+	0x4f, 0x8f, 0xb7, 0xf7, 0xa0, 0xdf, 0x85, 0x7c, 0x0d, 0xdc, 0xf6, 0xdb, 0x69, 0x8a, 0x60, 0xe9,
+	0xbe, 0x4a, 0xaf, 0xe6, 0xa0, 0xc6, 0x07, 0x66, 0xeb, 0x57, 0xff, 0x01, 0x00, 0x00, 0xff, 0xff,
+	0xb5, 0xb6, 0x23, 0x44, 0xcc, 0x01, 0x00, 0x00,
 }
 
 func (m *Mailbox) Marshal() (dAtA []byte, err error) {
@@ -127,8 +214,20 @@ func (m *Mailbox) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if m.MessageCount != 0 {
-		i = encodeVarintMailbox(dAtA, i, uint64(m.MessageCount))
+	if len(m.Creator) > 0 {
+		i -= len(m.Creator)
+		copy(dAtA[i:], m.Creator)
+		i = encodeVarintMailbox(dAtA, i, uint64(len(m.Creator)))
+		i--
+		dAtA[i] = 0x2a
+	}
+	if m.MessageReceived != 0 {
+		i = encodeVarintMailbox(dAtA, i, uint64(m.MessageReceived))
+		i--
+		dAtA[i] = 0x20
+	}
+	if m.MessageSent != 0 {
+		i = encodeVarintMailbox(dAtA, i, uint64(m.MessageSent))
 		i--
 		dAtA[i] = 0x18
 	}
@@ -139,10 +238,57 @@ func (m *Mailbox) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x12
 	}
-	if m.Id != 0 {
-		i = encodeVarintMailbox(dAtA, i, uint64(m.Id))
+	if len(m.Id) > 0 {
+		i -= len(m.Id)
+		copy(dAtA[i:], m.Id)
+		i = encodeVarintMailbox(dAtA, i, uint64(len(m.Id)))
 		i--
-		dAtA[i] = 0x8
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MailboxMessage) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MailboxMessage) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MailboxMessage) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Received {
+		i--
+		if m.Received {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x18
+	}
+	if m.MessageId != 0 {
+		i = encodeVarintMailbox(dAtA, i, uint64(m.MessageId))
+		i--
+		dAtA[i] = 0x10
+	}
+	if len(m.MailboxId) > 0 {
+		i -= len(m.MailboxId)
+		copy(dAtA[i:], m.MailboxId)
+		i = encodeVarintMailbox(dAtA, i, uint64(len(m.MailboxId)))
+		i--
+		dAtA[i] = 0xa
 	}
 	return len(dAtA) - i, nil
 }
@@ -164,15 +310,42 @@ func (m *Mailbox) Size() (n int) {
 	}
 	var l int
 	_ = l
-	if m.Id != 0 {
-		n += 1 + sovMailbox(uint64(m.Id))
+	l = len(m.Id)
+	if l > 0 {
+		n += 1 + l + sovMailbox(uint64(l))
 	}
 	l = len(m.Ism)
 	if l > 0 {
 		n += 1 + l + sovMailbox(uint64(l))
 	}
-	if m.MessageCount != 0 {
-		n += 1 + sovMailbox(uint64(m.MessageCount))
+	if m.MessageSent != 0 {
+		n += 1 + sovMailbox(uint64(m.MessageSent))
+	}
+	if m.MessageReceived != 0 {
+		n += 1 + sovMailbox(uint64(m.MessageReceived))
+	}
+	l = len(m.Creator)
+	if l > 0 {
+		n += 1 + l + sovMailbox(uint64(l))
+	}
+	return n
+}
+
+func (m *MailboxMessage) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.MailboxId)
+	if l > 0 {
+		n += 1 + l + sovMailbox(uint64(l))
+	}
+	if m.MessageId != 0 {
+		n += 1 + sovMailbox(uint64(m.MessageId))
+	}
+	if m.Received {
+		n += 2
 	}
 	return n
 }
@@ -213,10 +386,10 @@ func (m *Mailbox) Unmarshal(dAtA []byte) error {
 		}
 		switch fieldNum {
 		case 1:
-			if wireType != 0 {
+			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
 			}
-			m.Id = 0
+			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowMailbox
@@ -226,11 +399,24 @@ func (m *Mailbox) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Id |= int64(b&0x7F) << shift
+				stringLen |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthMailbox
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthMailbox
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Id = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Ism", wireType)
@@ -265,9 +451,9 @@ func (m *Mailbox) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 3:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field MessageCount", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field MessageSent", wireType)
 			}
-			m.MessageCount = 0
+			m.MessageSent = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowMailbox
@@ -277,11 +463,183 @@ func (m *Mailbox) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.MessageCount |= int64(b&0x7F) << shift
+				m.MessageSent |= uint32(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
+		case 4:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MessageReceived", wireType)
+			}
+			m.MessageReceived = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowMailbox
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.MessageReceived |= uint32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowMailbox
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthMailbox
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthMailbox
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Creator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipMailbox(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthMailbox
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MailboxMessage) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowMailbox
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MailboxMessage: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MailboxMessage: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MailboxId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowMailbox
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthMailbox
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthMailbox
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.MailboxId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MessageId", wireType)
+			}
+			m.MessageId = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowMailbox
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.MessageId |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Received", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowMailbox
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.Received = bool(v != 0)
 		default:
 			iNdEx = preIndex
 			skippy, err := skipMailbox(dAtA[iNdEx:])

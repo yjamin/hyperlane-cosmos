@@ -21,9 +21,20 @@ type queryServer struct {
 	k Keeper
 }
 
-func (qs queryServer) Mailboxes(ctx context.Context, request *types.QueryMailboxesRequest) (*types.QueryMailboxesResponse, error) {
-	//TODO implement me
-	panic("implement me")
+func (qs queryServer) Mailboxes(ctx context.Context, _ *types.QueryMailboxesRequest) (*types.QueryMailboxesResponse, error) {
+	it, err := qs.k.Mailboxes.Iterate(ctx, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	mailboxes, err := it.Values()
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.QueryMailboxesResponse{
+		Mailbox: mailboxes,
+	}, nil
 }
 
 func (qs queryServer) Mailbox(ctx context.Context, request *types.QueryMailboxRequest) (*types.QueryMailboxResponse, error) {

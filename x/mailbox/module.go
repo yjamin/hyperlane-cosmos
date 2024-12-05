@@ -4,8 +4,10 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/KYVENetwork/hyperlane-cosmos/x/mailbox/client/cli"
 	keeper2 "github.com/KYVENetwork/hyperlane-cosmos/x/mailbox/keeper"
 	"github.com/KYVENetwork/hyperlane-cosmos/x/mailbox/types"
+	"github.com/spf13/cobra"
 
 	"cosmossdk.io/core/appmodule"
 	gwruntime "github.com/grpc-ecosystem/grpc-gateway/runtime"
@@ -112,4 +114,9 @@ func (am AppModule) ExportGenesis(ctx sdk.Context, cdc codec.JSONCodec) json.Raw
 	}
 
 	return cdc.MustMarshalJSON(gs)
+}
+
+// GetTxCmd implements AppModuleBasic interface
+func (am AppModule) GetTxCmd() *cobra.Command {
+	return cli.GetTxCmd()
 }

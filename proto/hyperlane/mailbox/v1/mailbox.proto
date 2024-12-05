@@ -3,8 +3,19 @@ package hyperlane.mailbox.v1;
 
 option go_package = "github.com/KYVENetwork/hyperlane-cosmos/x/mailbox/types";
 
+import "cosmos_proto/cosmos.proto";
+
 message Mailbox {
-  int64 id = 1;
+  // TODO: Should be bytes32
+  string id = 1;
   string ism = 2;
-  int64 message_count =3;
+  uint32 message_sent =3;
+  uint32 message_received = 4;
+  string creator = 5 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+}
+
+message MailboxMessage {
+  string mailbox_id = 1;
+  int64 message_id = 2;
+  bool received = 3;
 }

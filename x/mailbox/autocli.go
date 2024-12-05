@@ -16,7 +16,6 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					Use:       "params",
 					Short:     "Get the current module parameters",
 				},
-				// TODO: Add CreateMailbox
 			},
 		},
 		Tx: &autocliv1.ServiceCommandDescriptor{
@@ -26,7 +25,6 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					RpcMethod: "UpdateParams",
 					Skip:      true, // This is a authority gated tx, so we skip it.
 				},
-				// TODO: Add CreateMailbox
 			},
 		},
 	}
