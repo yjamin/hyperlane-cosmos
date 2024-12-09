@@ -153,6 +153,119 @@ func (m *MsgCreateCollateralTokenResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgCreateCollateralTokenResponse proto.InternalMessageInfo
 
+type MsgCreateSyntheticToken struct {
+	// sender is the message sender.
+	Creator          string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	OriginMailbox    string `protobuf:"bytes,2,opt,name=origin_mailbox,json=originMailbox,proto3" json:"origin_mailbox,omitempty"`
+	ReceiverDomain   uint32 `protobuf:"varint,3,opt,name=receiver_domain,json=receiverDomain,proto3" json:"receiver_domain,omitempty"`
+	ReceiverMailbox  string `protobuf:"bytes,4,opt,name=receiver_mailbox,json=receiverMailbox,proto3" json:"receiver_mailbox,omitempty"`
+	ReceiverContract string `protobuf:"bytes,5,opt,name=receiver_contract,json=receiverContract,proto3" json:"receiver_contract,omitempty"`
+}
+
+func (m *MsgCreateSyntheticToken) Reset()         { *m = MsgCreateSyntheticToken{} }
+func (m *MsgCreateSyntheticToken) String() string { return proto.CompactTextString(m) }
+func (*MsgCreateSyntheticToken) ProtoMessage()    {}
+func (*MsgCreateSyntheticToken) Descriptor() ([]byte, []int) {
+	return fileDescriptor_9d1a3f4c9d53a091, []int{2}
+}
+func (m *MsgCreateSyntheticToken) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgCreateSyntheticToken) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgCreateSyntheticToken.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgCreateSyntheticToken) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgCreateSyntheticToken.Merge(m, src)
+}
+func (m *MsgCreateSyntheticToken) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgCreateSyntheticToken) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgCreateSyntheticToken.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgCreateSyntheticToken proto.InternalMessageInfo
+
+func (m *MsgCreateSyntheticToken) GetCreator() string {
+	if m != nil {
+		return m.Creator
+	}
+	return ""
+}
+
+func (m *MsgCreateSyntheticToken) GetOriginMailbox() string {
+	if m != nil {
+		return m.OriginMailbox
+	}
+	return ""
+}
+
+func (m *MsgCreateSyntheticToken) GetReceiverDomain() uint32 {
+	if m != nil {
+		return m.ReceiverDomain
+	}
+	return 0
+}
+
+func (m *MsgCreateSyntheticToken) GetReceiverMailbox() string {
+	if m != nil {
+		return m.ReceiverMailbox
+	}
+	return ""
+}
+
+func (m *MsgCreateSyntheticToken) GetReceiverContract() string {
+	if m != nil {
+		return m.ReceiverContract
+	}
+	return ""
+}
+
+type MsgCreateSyntheticTokenResponse struct {
+}
+
+func (m *MsgCreateSyntheticTokenResponse) Reset()         { *m = MsgCreateSyntheticTokenResponse{} }
+func (m *MsgCreateSyntheticTokenResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgCreateSyntheticTokenResponse) ProtoMessage()    {}
+func (*MsgCreateSyntheticTokenResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_9d1a3f4c9d53a091, []int{3}
+}
+func (m *MsgCreateSyntheticTokenResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgCreateSyntheticTokenResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgCreateSyntheticTokenResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgCreateSyntheticTokenResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgCreateSyntheticTokenResponse.Merge(m, src)
+}
+func (m *MsgCreateSyntheticTokenResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgCreateSyntheticTokenResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgCreateSyntheticTokenResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgCreateSyntheticTokenResponse proto.InternalMessageInfo
+
 type MsgRemoteTransfer struct {
 	Sender    string                `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
 	TokenId   string                `protobuf:"bytes,2,opt,name=token_id,json=tokenId,proto3" json:"token_id,omitempty"`
@@ -164,7 +277,7 @@ func (m *MsgRemoteTransfer) Reset()         { *m = MsgRemoteTransfer{} }
 func (m *MsgRemoteTransfer) String() string { return proto.CompactTextString(m) }
 func (*MsgRemoteTransfer) ProtoMessage()    {}
 func (*MsgRemoteTransfer) Descriptor() ([]byte, []int) {
-	return fileDescriptor_9d1a3f4c9d53a091, []int{2}
+	return fileDescriptor_9d1a3f4c9d53a091, []int{4}
 }
 func (m *MsgRemoteTransfer) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -222,7 +335,7 @@ func (m *MsgRemoteTransferResponse) Reset()         { *m = MsgRemoteTransferResp
 func (m *MsgRemoteTransferResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgRemoteTransferResponse) ProtoMessage()    {}
 func (*MsgRemoteTransferResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_9d1a3f4c9d53a091, []int{3}
+	return fileDescriptor_9d1a3f4c9d53a091, []int{5}
 }
 func (m *MsgRemoteTransferResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -261,6 +374,8 @@ func (m *MsgRemoteTransferResponse) GetMessageId() string {
 func init() {
 	proto.RegisterType((*MsgCreateCollateralToken)(nil), "hyperlane.warp.v1.MsgCreateCollateralToken")
 	proto.RegisterType((*MsgCreateCollateralTokenResponse)(nil), "hyperlane.warp.v1.MsgCreateCollateralTokenResponse")
+	proto.RegisterType((*MsgCreateSyntheticToken)(nil), "hyperlane.warp.v1.MsgCreateSyntheticToken")
+	proto.RegisterType((*MsgCreateSyntheticTokenResponse)(nil), "hyperlane.warp.v1.MsgCreateSyntheticTokenResponse")
 	proto.RegisterType((*MsgRemoteTransfer)(nil), "hyperlane.warp.v1.MsgRemoteTransfer")
 	proto.RegisterType((*MsgRemoteTransferResponse)(nil), "hyperlane.warp.v1.MsgRemoteTransferResponse")
 }
@@ -268,45 +383,50 @@ func init() {
 func init() { proto.RegisterFile("hyperlane/warp/v1/tx.proto", fileDescriptor_9d1a3f4c9d53a091) }
 
 var fileDescriptor_9d1a3f4c9d53a091 = []byte{
-	// 607 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x54, 0x4d, 0x4f, 0xd4, 0x40,
-	0x18, 0xde, 0x82, 0x2c, 0x32, 0x0a, 0xba, 0x13, 0x88, 0xa5, 0x91, 0xb2, 0x6e, 0x34, 0x20, 0x48,
-	0xcb, 0x87, 0x07, 0xc3, 0x4d, 0xc0, 0xc4, 0x8d, 0x59, 0x0e, 0x95, 0x98, 0xe8, 0x65, 0x33, 0xb4,
-	0xaf, 0x65, 0xc2, 0xce, 0x4c, 0x33, 0x33, 0x7c, 0xdd, 0x8c, 0x47, 0x4f, 0xfe, 0x0c, 0x8f, 0x1c,
-	0xf8, 0x11, 0x1c, 0x09, 0x5e, 0x8c, 0x07, 0x62, 0xe0, 0xc0, 0xc9, 0x3f, 0xe0, 0xc9, 0xb4, 0x9d,
-	0xd6, 0xf0, 0xb1, 0x51, 0x2f, 0xcd, 0xcc, 0xf3, 0x3e, 0xf3, 0x3c, 0xef, 0x3c, 0xd3, 0x19, 0xe4,
-	0x6c, 0xec, 0x25, 0x20, 0x3b, 0x84, 0x83, 0xbf, 0x43, 0x64, 0xe2, 0x6f, 0xcf, 0xf9, 0x7a, 0xd7,
-	0x4b, 0xa4, 0xd0, 0x02, 0xd7, 0xca, 0x9a, 0x97, 0xd6, 0xbc, 0xed, 0x39, 0xe7, 0x5e, 0x28, 0x14,
-	0x13, 0xca, 0x67, 0x2a, 0x4e, 0xa9, 0x4c, 0xc5, 0x39, 0xd7, 0x19, 0x8e, 0x45, 0x2c, 0xb2, 0xa1,
-	0x9f, 0x8e, 0x0c, 0x5a, 0x23, 0x8c, 0x72, 0xe1, 0x67, 0x5f, 0x03, 0x8d, 0x5d, 0x63, 0xb8, 0x97,
-	0x80, 0x32, 0xe5, 0xd1, 0xdc, 0xa0, 0x9d, 0x4b, 0xe5, 0x93, 0xbc, 0xd4, 0xf8, 0xda, 0x83, 0xec,
-	0x96, 0x8a, 0x97, 0x25, 0x10, 0x0d, 0xcb, 0xa2, 0xd3, 0x21, 0x1a, 0x24, 0xe9, 0xac, 0x89, 0x4d,
-	0xe0, 0x78, 0x1e, 0xf5, 0x87, 0x69, 0x41, 0x48, 0xdb, 0xaa, 0x5b, 0x93, 0x03, 0x4b, 0xf6, 0xf1,
-	0xc1, 0xcc, 0xb0, 0x59, 0xff, 0x3c, 0x8a, 0x24, 0x28, 0xf5, 0x5a, 0x4b, 0xca, 0xe3, 0xa0, 0x20,
-	0xe2, 0x47, 0x68, 0x48, 0x48, 0x1a, 0x53, 0xde, 0x66, 0x84, 0x76, 0xd6, 0xc5, 0xae, 0xdd, 0x93,
-	0x2e, 0x0d, 0x06, 0x73, 0xb4, 0x95, 0x83, 0xf8, 0x01, 0xba, 0x6d, 0x68, 0x11, 0x70, 0xc1, 0xec,
-	0xde, 0x8c, 0x74, 0x2b, 0xc7, 0x56, 0x52, 0x08, 0x4f, 0xa0, 0x3b, 0x12, 0x42, 0xa0, 0xdb, 0x20,
-	0xdb, 0x91, 0x60, 0x84, 0x72, 0xfb, 0x46, 0xdd, 0x9a, 0x1c, 0x0c, 0x86, 0x0a, 0x78, 0x25, 0x43,
-	0xf1, 0x63, 0x74, 0xb7, 0x24, 0x16, 0xa6, 0x7d, 0x99, 0x5e, 0x29, 0x50, 0xd8, 0x4e, 0xa3, 0x5a,
-	0x49, 0x0d, 0x05, 0xd7, 0x92, 0x84, 0xda, 0xae, 0x66, 0xdc, 0x52, 0x63, 0xd9, 0xe0, 0x8b, 0xcf,
-	0x3e, 0x9e, 0xef, 0x4f, 0x15, 0x1b, 0xfb, 0x74, 0xbe, 0x3f, 0x35, 0x71, 0x29, 0xe6, 0x6e, 0xc1,
-	0x35, 0x1a, 0xa8, 0xde, 0xad, 0x16, 0x80, 0x4a, 0x04, 0x57, 0xd0, 0xf8, 0x65, 0xa1, 0x5a, 0x4b,
-	0xc5, 0x01, 0x30, 0xa1, 0x61, 0x4d, 0x12, 0xae, 0xde, 0x83, 0xc4, 0xb3, 0xa8, 0xaa, 0x80, 0x47,
-	0xf0, 0xf7, 0xc4, 0x0d, 0x0f, 0x8f, 0xa2, 0x9b, 0x3a, 0x15, 0x6e, 0xd3, 0xc8, 0x44, 0xdd, 0x9f,
-	0xcd, 0x9b, 0x11, 0xbe, 0x8f, 0x06, 0x24, 0x84, 0x34, 0xa1, 0xc0, 0xb5, 0x49, 0xf8, 0x0f, 0x80,
-	0x5f, 0xa2, 0x2a, 0x61, 0x62, 0x8b, 0xeb, 0x2c, 0xd6, 0x81, 0xa5, 0xd9, 0xc3, 0x93, 0xf1, 0xca,
-	0xf7, 0x93, 0xf1, 0x91, 0xdc, 0x4e, 0x45, 0x9b, 0x1e, 0x15, 0x3e, 0x23, 0x7a, 0xc3, 0x6b, 0x72,
-	0x7d, 0x7c, 0x30, 0x83, 0x4c, 0x1f, 0x4d, 0xae, 0xbf, 0x9c, 0xef, 0x4f, 0x59, 0x81, 0x59, 0xbf,
-	0x38, 0x9b, 0x06, 0x65, 0xfa, 0x49, 0x73, 0xaa, 0x5f, 0xcd, 0xe9, 0xe2, 0x36, 0x1b, 0x8b, 0x68,
-	0xf4, 0x0a, 0x58, 0x24, 0x83, 0xc7, 0x10, 0x62, 0xa0, 0x14, 0x89, 0x21, 0xdd, 0x93, 0x95, 0xf7,
-	0x6d, 0x90, 0x66, 0x34, 0xff, 0xd3, 0x42, 0xbd, 0x2d, 0x15, 0xe3, 0x3d, 0x34, 0x72, 0xfd, 0x6f,
-	0x3b, 0xed, 0x5d, 0xb9, 0x63, 0x5e, 0xb7, 0xe3, 0x70, 0x16, 0xfe, 0x83, 0x5c, 0x76, 0x18, 0xa1,
-	0xa1, 0x4b, 0xe7, 0xf6, 0xf0, 0x7a, 0x99, 0x8b, 0x2c, 0xe7, 0xc9, 0xbf, 0xb0, 0x0a, 0x17, 0xa7,
-	0xef, 0x43, 0x9a, 0xf2, 0xd2, 0xea, 0xe1, 0xa9, 0x6b, 0x1d, 0x9d, 0xba, 0xd6, 0x8f, 0x53, 0xd7,
-	0xfa, 0x7c, 0xe6, 0x56, 0x8e, 0xce, 0xdc, 0xca, 0xb7, 0x33, 0xb7, 0xf2, 0xee, 0x69, 0x4c, 0xf5,
-	0xc6, 0xd6, 0xba, 0x17, 0x0a, 0xe6, 0xbf, 0x7a, 0xfb, 0xe6, 0xc5, 0x2a, 0xe8, 0x1d, 0x21, 0x37,
-	0xfd, 0xd2, 0x64, 0xc6, 0xbc, 0x2c, 0xbb, 0xf9, 0x39, 0x64, 0x6f, 0xc2, 0x7a, 0x35, 0xbb, 0xf9,
-	0x0b, 0xbf, 0x03, 0x00, 0x00, 0xff, 0xff, 0x10, 0xff, 0x65, 0x4b, 0xa6, 0x04, 0x00, 0x00,
+	// 674 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x95, 0x4f, 0x4f, 0x13, 0x4f,
+	0x18, 0xc7, 0xbb, 0x05, 0xca, 0x8f, 0xf9, 0x09, 0xda, 0x0d, 0x84, 0x65, 0x23, 0xa5, 0x34, 0x2a,
+	0x58, 0x64, 0x97, 0x3f, 0x26, 0x1a, 0x6e, 0x02, 0x26, 0x36, 0xa6, 0x1c, 0x0a, 0x31, 0xd1, 0x4b,
+	0x33, 0xec, 0x3e, 0x6e, 0x27, 0x74, 0x67, 0x9a, 0x99, 0xa1, 0xd0, 0x9b, 0xf1, 0xe8, 0xc9, 0x97,
+	0xe1, 0xc9, 0x70, 0xe0, 0x45, 0x70, 0x24, 0x78, 0x31, 0x1e, 0x88, 0x81, 0x18, 0xde, 0x83, 0x27,
+	0xb3, 0xbb, 0xb3, 0x6b, 0x0a, 0x5d, 0x85, 0x83, 0x97, 0x66, 0xf7, 0xfb, 0x7c, 0xe7, 0xf9, 0xce,
+	0x7c, 0x66, 0x3a, 0x8b, 0xcc, 0x46, 0xa7, 0x05, 0xbc, 0x89, 0x29, 0xd8, 0x7b, 0x98, 0xb7, 0xec,
+	0xf6, 0xa2, 0x2d, 0xf7, 0xad, 0x16, 0x67, 0x92, 0xe9, 0xf9, 0xa4, 0x66, 0x05, 0x35, 0xab, 0xbd,
+	0x68, 0x8e, 0x3b, 0x4c, 0xf8, 0x4c, 0xd8, 0xbe, 0xf0, 0x02, 0xab, 0x2f, 0xbc, 0xc8, 0x6b, 0x8e,
+	0x7a, 0xcc, 0x63, 0xe1, 0xa3, 0x1d, 0x3c, 0x29, 0x35, 0x8f, 0x7d, 0x42, 0x99, 0x1d, 0xfe, 0x2a,
+	0x69, 0xb2, 0x47, 0x60, 0xa7, 0x05, 0x42, 0x95, 0x27, 0xa2, 0x80, 0x7a, 0xd4, 0x2a, 0x7a, 0x89,
+	0x4a, 0xa5, 0x2f, 0x59, 0x64, 0x54, 0x85, 0xb7, 0xc6, 0x01, 0x4b, 0x58, 0x63, 0xcd, 0x26, 0x96,
+	0xc0, 0x71, 0x73, 0x8b, 0xed, 0x00, 0xd5, 0x97, 0xd0, 0xa0, 0x13, 0x14, 0x18, 0x37, 0xb4, 0xa2,
+	0x36, 0x3b, 0xb4, 0x6a, 0x9c, 0x1c, 0xce, 0x8f, 0xaa, 0xf1, 0xcf, 0x5c, 0x97, 0x83, 0x10, 0x9b,
+	0x92, 0x13, 0xea, 0xd5, 0x62, 0xa3, 0x7e, 0x1f, 0x8d, 0x30, 0x4e, 0x3c, 0x42, 0xeb, 0x3e, 0x26,
+	0xcd, 0x6d, 0xb6, 0x6f, 0x64, 0x83, 0xa1, 0xb5, 0xe1, 0x48, 0xad, 0x46, 0xa2, 0x3e, 0x8d, 0x6e,
+	0x29, 0x9b, 0x0b, 0x94, 0xf9, 0x46, 0x5f, 0x68, 0xfa, 0x3f, 0xd2, 0xd6, 0x03, 0x49, 0x9f, 0x41,
+	0xb7, 0x39, 0x38, 0x40, 0xda, 0xc0, 0xeb, 0x2e, 0xf3, 0x31, 0xa1, 0x46, 0x7f, 0x51, 0x9b, 0x1d,
+	0xae, 0x8d, 0xc4, 0xf2, 0x7a, 0xa8, 0xea, 0x0f, 0xd1, 0x9d, 0xc4, 0x18, 0x87, 0x0e, 0x84, 0xfd,
+	0x92, 0x06, 0x71, 0xec, 0x1c, 0xca, 0x27, 0x56, 0x87, 0x51, 0xc9, 0xb1, 0x23, 0x8d, 0x5c, 0xe8,
+	0x4d, 0x7a, 0xac, 0x29, 0x7d, 0xe5, 0xe9, 0xfb, 0x8b, 0x83, 0x72, 0xbc, 0xb0, 0x0f, 0x17, 0x07,
+	0xe5, 0x99, 0x4b, 0x98, 0xd3, 0xc0, 0x95, 0x4a, 0xa8, 0x98, 0x56, 0xab, 0x81, 0x68, 0x31, 0x2a,
+	0xa0, 0xf4, 0x39, 0x8b, 0xc6, 0x13, 0xd3, 0x66, 0x87, 0xca, 0x06, 0x48, 0xe2, 0xfc, 0x73, 0xf0,
+	0x3d, 0xa8, 0xf6, 0x5d, 0x9b, 0x6a, 0xff, 0x0d, 0xa8, 0x0e, 0xa4, 0x50, 0x7d, 0x72, 0x99, 0xea,
+	0x83, 0x34, 0xaa, 0xdd, 0x50, 0x4a, 0xd3, 0x68, 0x2a, 0xa5, 0x94, 0x30, 0xfd, 0xa9, 0xa1, 0x7c,
+	0x55, 0x78, 0x35, 0xf0, 0x99, 0x84, 0x2d, 0x8e, 0xa9, 0x78, 0x0b, 0x5c, 0x5f, 0x40, 0x39, 0x01,
+	0xd4, 0x85, 0xbf, 0xc3, 0x54, 0x3e, 0x7d, 0x02, 0xfd, 0x27, 0x83, 0xc6, 0x75, 0xe2, 0x2a, 0x8a,
+	0x83, 0xe1, 0x7b, 0xc5, 0xd5, 0xef, 0xa2, 0x21, 0x0e, 0x0e, 0x69, 0x11, 0xa0, 0x52, 0x9d, 0xda,
+	0xdf, 0x82, 0xfe, 0x02, 0xe5, 0xb0, 0xcf, 0x76, 0xa9, 0x8c, 0x50, 0xad, 0x2e, 0x1c, 0x9d, 0x4e,
+	0x65, 0xbe, 0x9d, 0x4e, 0x8d, 0x45, 0x71, 0xc2, 0xdd, 0xb1, 0x08, 0xb3, 0x7d, 0x2c, 0x1b, 0x56,
+	0x85, 0xca, 0x93, 0xc3, 0x79, 0xa4, 0xe6, 0x51, 0xa1, 0xf2, 0xd3, 0xc5, 0x41, 0x59, 0xab, 0xa9,
+	0xf1, 0x2b, 0x0b, 0x01, 0x26, 0x35, 0x9f, 0x80, 0x52, 0xf1, 0x2a, 0xa5, 0xee, 0x65, 0x96, 0x56,
+	0xd0, 0xc4, 0x15, 0x31, 0x26, 0xa3, 0x4f, 0x22, 0xe4, 0x83, 0x10, 0xd8, 0x83, 0x60, 0x4d, 0x5a,
+	0x34, 0x6f, 0xa5, 0x54, 0xdc, 0xa5, 0x1f, 0x59, 0xd4, 0x57, 0x15, 0x9e, 0xde, 0x41, 0x63, 0xbd,
+	0xaf, 0x82, 0x39, 0xeb, 0xca, 0xbd, 0x65, 0xa5, 0x1d, 0x71, 0x73, 0xf9, 0x06, 0xe6, 0x64, 0x86,
+	0x6d, 0x34, 0xda, 0xf3, 0xbf, 0x50, 0xfe, 0x53, 0xb3, 0x6e, 0xaf, 0xb9, 0x74, 0x7d, 0x6f, 0x92,
+	0xeb, 0xa2, 0x91, 0x4b, 0xe7, 0xe5, 0x5e, 0xef, 0x2e, 0xdd, 0x2e, 0xf3, 0xd1, 0x75, 0x5c, 0x71,
+	0x8a, 0x39, 0xf0, 0x2e, 0xd8, 0xdd, 0xd5, 0x8d, 0xa3, 0xb3, 0x82, 0x76, 0x7c, 0x56, 0xd0, 0xbe,
+	0x9f, 0x15, 0xb4, 0x8f, 0xe7, 0x85, 0xcc, 0xf1, 0x79, 0x21, 0xf3, 0xf5, 0xbc, 0x90, 0x79, 0xf3,
+	0xd8, 0x23, 0xb2, 0xb1, 0xbb, 0x6d, 0x39, 0xcc, 0xb7, 0x5f, 0xbe, 0x7e, 0xf5, 0x7c, 0x03, 0xe4,
+	0x1e, 0xe3, 0x3b, 0x76, 0x12, 0x32, 0xaf, 0xbe, 0x12, 0xfb, 0xd1, 0xfe, 0x87, 0xf7, 0xfb, 0x76,
+	0x2e, 0xbc, 0xc5, 0x97, 0x7f, 0x05, 0x00, 0x00, 0xff, 0xff, 0x5d, 0x12, 0xbd, 0x64, 0x72, 0x06,
+	0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -322,6 +442,7 @@ const _ = grpc.SupportPackageIsVersion4
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type MsgClient interface {
 	CreateCollateralToken(ctx context.Context, in *MsgCreateCollateralToken, opts ...grpc.CallOption) (*MsgCreateCollateralTokenResponse, error)
+	CreateSyntheticToken(ctx context.Context, in *MsgCreateSyntheticToken, opts ...grpc.CallOption) (*MsgCreateSyntheticTokenResponse, error)
 	RemoteTransfer(ctx context.Context, in *MsgRemoteTransfer, opts ...grpc.CallOption) (*MsgRemoteTransferResponse, error)
 }
 
@@ -342,6 +463,15 @@ func (c *msgClient) CreateCollateralToken(ctx context.Context, in *MsgCreateColl
 	return out, nil
 }
 
+func (c *msgClient) CreateSyntheticToken(ctx context.Context, in *MsgCreateSyntheticToken, opts ...grpc.CallOption) (*MsgCreateSyntheticTokenResponse, error) {
+	out := new(MsgCreateSyntheticTokenResponse)
+	err := c.cc.Invoke(ctx, "/hyperlane.warp.v1.Msg/CreateSyntheticToken", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *msgClient) RemoteTransfer(ctx context.Context, in *MsgRemoteTransfer, opts ...grpc.CallOption) (*MsgRemoteTransferResponse, error) {
 	out := new(MsgRemoteTransferResponse)
 	err := c.cc.Invoke(ctx, "/hyperlane.warp.v1.Msg/RemoteTransfer", in, out, opts...)
@@ -354,6 +484,7 @@ func (c *msgClient) RemoteTransfer(ctx context.Context, in *MsgRemoteTransfer, o
 // MsgServer is the server API for Msg service.
 type MsgServer interface {
 	CreateCollateralToken(context.Context, *MsgCreateCollateralToken) (*MsgCreateCollateralTokenResponse, error)
+	CreateSyntheticToken(context.Context, *MsgCreateSyntheticToken) (*MsgCreateSyntheticTokenResponse, error)
 	RemoteTransfer(context.Context, *MsgRemoteTransfer) (*MsgRemoteTransferResponse, error)
 }
 
@@ -363,6 +494,9 @@ type UnimplementedMsgServer struct {
 
 func (*UnimplementedMsgServer) CreateCollateralToken(ctx context.Context, req *MsgCreateCollateralToken) (*MsgCreateCollateralTokenResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateCollateralToken not implemented")
+}
+func (*UnimplementedMsgServer) CreateSyntheticToken(ctx context.Context, req *MsgCreateSyntheticToken) (*MsgCreateSyntheticTokenResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateSyntheticToken not implemented")
 }
 func (*UnimplementedMsgServer) RemoteTransfer(ctx context.Context, req *MsgRemoteTransfer) (*MsgRemoteTransferResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RemoteTransfer not implemented")
@@ -386,6 +520,24 @@ func _Msg_CreateCollateralToken_Handler(srv interface{}, ctx context.Context, de
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(MsgServer).CreateCollateralToken(ctx, req.(*MsgCreateCollateralToken))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_CreateSyntheticToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgCreateSyntheticToken)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).CreateSyntheticToken(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/hyperlane.warp.v1.Msg/CreateSyntheticToken",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).CreateSyntheticToken(ctx, req.(*MsgCreateSyntheticToken))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -415,6 +567,10 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateCollateralToken",
 			Handler:    _Msg_CreateCollateralToken_Handler,
+		},
+		{
+			MethodName: "CreateSyntheticToken",
+			Handler:    _Msg_CreateSyntheticToken_Handler,
 		},
 		{
 			MethodName: "RemoteTransfer",
@@ -504,6 +660,85 @@ func (m *MsgCreateCollateralTokenResponse) MarshalTo(dAtA []byte) (int, error) {
 }
 
 func (m *MsgCreateCollateralTokenResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgCreateSyntheticToken) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgCreateSyntheticToken) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgCreateSyntheticToken) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.ReceiverContract) > 0 {
+		i -= len(m.ReceiverContract)
+		copy(dAtA[i:], m.ReceiverContract)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.ReceiverContract)))
+		i--
+		dAtA[i] = 0x2a
+	}
+	if len(m.ReceiverMailbox) > 0 {
+		i -= len(m.ReceiverMailbox)
+		copy(dAtA[i:], m.ReceiverMailbox)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.ReceiverMailbox)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if m.ReceiverDomain != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.ReceiverDomain))
+		i--
+		dAtA[i] = 0x18
+	}
+	if len(m.OriginMailbox) > 0 {
+		i -= len(m.OriginMailbox)
+		copy(dAtA[i:], m.OriginMailbox)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.OriginMailbox)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Creator) > 0 {
+		i -= len(m.Creator)
+		copy(dAtA[i:], m.Creator)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Creator)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgCreateSyntheticTokenResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgCreateSyntheticTokenResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgCreateSyntheticTokenResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -639,6 +874,43 @@ func (m *MsgCreateCollateralToken) Size() (n int) {
 }
 
 func (m *MsgCreateCollateralTokenResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *MsgCreateSyntheticToken) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Creator)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.OriginMailbox)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	if m.ReceiverDomain != 0 {
+		n += 1 + sovTx(uint64(m.ReceiverDomain))
+	}
+	l = len(m.ReceiverMailbox)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.ReceiverContract)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgCreateSyntheticTokenResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -945,6 +1217,253 @@ func (m *MsgCreateCollateralTokenResponse) Unmarshal(dAtA []byte) error {
 		}
 		if fieldNum <= 0 {
 			return fmt.Errorf("proto: MsgCreateCollateralTokenResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgCreateSyntheticToken) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgCreateSyntheticToken: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgCreateSyntheticToken: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Creator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field OriginMailbox", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.OriginMailbox = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ReceiverDomain", wireType)
+			}
+			m.ReceiverDomain = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.ReceiverDomain |= uint32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ReceiverMailbox", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ReceiverMailbox = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ReceiverContract", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ReceiverContract = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgCreateSyntheticTokenResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgCreateSyntheticTokenResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgCreateSyntheticTokenResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:

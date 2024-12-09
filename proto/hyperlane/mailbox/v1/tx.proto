@@ -57,9 +57,10 @@ message MsgProcessMessage {
   option (cosmos.msg.v1.signer) = "sender";
   option (amino.name) = "hyperlane/mailbox/MsgProcessMessage";
 
-  string metadata = 1;
-  string message = 2;
-  string sender = 3 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string mailbox_id = 1;
+  string metadata = 2;
+  string message = 3;
+  string sender = 4 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 }
 
 message MsgProcessMessageResponse {}

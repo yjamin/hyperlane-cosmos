@@ -9,21 +9,26 @@ import (
 	"github.com/ethereum/go-ethereum/common/hexutil"
 )
 
-func (k Keeper) ProcessMessage(ctx sdk.Context, rawMessage []byte, metadata []byte) error {
+func (k Keeper) ProcessMessage(ctx sdk.Context, mailboxIdString string, rawMessage []byte, metadata []byte) error {
 
 	message, err := types.ParseHyperlaneMessage(rawMessage)
 	if err != nil {
 		return err
 	}
 
+	mailboxId, err := util.DecodeHexAddress(mailboxIdString)
+	if err != nil {
+		return err
+	}
+
 	// Check if mailbox exists and increment counter
-	mailbox, err := k.Mailboxes.Get(ctx, message.Recipient.Bytes())
+	mailbox, err := k.Mailboxes.Get(ctx, mailboxId.Bytes())
 	if err != nil {
 		return err
 	}
 	mailbox.MessageReceived++
 
-	err = k.Mailboxes.Set(ctx, message.Recipient.Bytes(), mailbox)
+	err = k.Mailboxes.Set(ctx, mailboxId.Bytes(), mailbox)
 	if err != nil {
 		return err
 	}
@@ -44,7 +49,7 @@ func (k Keeper) ProcessMessage(ctx sdk.Context, rawMessage []byte, metadata []by
 	// TODO: Verify ISM
 	_ = metadata
 
-	_ = k.Hooks().Handle(ctx, message.Origin, message.Sender, message.Body)
+	_ = k.Hooks().Handle(ctx, mailboxId, message.Origin, message.Sender, message)
 
 	_ = sdk.UnwrapSDKContext(ctx).EventManager().EmitTypedEvent(&types.Process{
 		// TODO: Add OriginMailboxId, check if OriginMailboxId should be used as sender

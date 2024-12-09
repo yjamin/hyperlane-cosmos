@@ -10,12 +10,13 @@ import (
 
 func CmdProcessMessage() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "process [metadata] [message]",
+		Use:   "process [mailboxId] [metadata] [message]",
 		Short: "Process a Hyperlane message",
-		Args:  cobra.ExactArgs(2),
+		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			metadata := args[0]
-			message := args[1]
+			mailboxId := args[0]
+			metadata := args[1]
+			message := args[2]
 
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -23,9 +24,10 @@ func CmdProcessMessage() *cobra.Command {
 			}
 
 			msg := types.MsgProcessMessage{
-				Metadata: metadata,
-				Message:  message,
-				Sender:   clientCtx.GetFromAddress().String(),
+				MailboxId: mailboxId,
+				Metadata:  metadata,
+				Message:   message,
+				Sender:    clientCtx.GetFromAddress().String(),
 			}
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)

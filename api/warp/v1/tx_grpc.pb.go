@@ -20,6 +20,7 @@ const _ = grpc.SupportPackageIsVersion7
 
 const (
 	Msg_CreateCollateralToken_FullMethodName = "/hyperlane.warp.v1.Msg/CreateCollateralToken"
+	Msg_CreateSyntheticToken_FullMethodName  = "/hyperlane.warp.v1.Msg/CreateSyntheticToken"
 	Msg_RemoteTransfer_FullMethodName        = "/hyperlane.warp.v1.Msg/RemoteTransfer"
 )
 
@@ -28,6 +29,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type MsgClient interface {
 	CreateCollateralToken(ctx context.Context, in *MsgCreateCollateralToken, opts ...grpc.CallOption) (*MsgCreateCollateralTokenResponse, error)
+	CreateSyntheticToken(ctx context.Context, in *MsgCreateSyntheticToken, opts ...grpc.CallOption) (*MsgCreateSyntheticTokenResponse, error)
 	RemoteTransfer(ctx context.Context, in *MsgRemoteTransfer, opts ...grpc.CallOption) (*MsgRemoteTransferResponse, error)
 }
 
@@ -48,6 +50,15 @@ func (c *msgClient) CreateCollateralToken(ctx context.Context, in *MsgCreateColl
 	return out, nil
 }
 
+func (c *msgClient) CreateSyntheticToken(ctx context.Context, in *MsgCreateSyntheticToken, opts ...grpc.CallOption) (*MsgCreateSyntheticTokenResponse, error) {
+	out := new(MsgCreateSyntheticTokenResponse)
+	err := c.cc.Invoke(ctx, Msg_CreateSyntheticToken_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *msgClient) RemoteTransfer(ctx context.Context, in *MsgRemoteTransfer, opts ...grpc.CallOption) (*MsgRemoteTransferResponse, error) {
 	out := new(MsgRemoteTransferResponse)
 	err := c.cc.Invoke(ctx, Msg_RemoteTransfer_FullMethodName, in, out, opts...)
@@ -62,6 +73,7 @@ func (c *msgClient) RemoteTransfer(ctx context.Context, in *MsgRemoteTransfer, o
 // for forward compatibility
 type MsgServer interface {
 	CreateCollateralToken(context.Context, *MsgCreateCollateralToken) (*MsgCreateCollateralTokenResponse, error)
+	CreateSyntheticToken(context.Context, *MsgCreateSyntheticToken) (*MsgCreateSyntheticTokenResponse, error)
 	RemoteTransfer(context.Context, *MsgRemoteTransfer) (*MsgRemoteTransferResponse, error)
 	mustEmbedUnimplementedMsgServer()
 }
@@ -72,6 +84,9 @@ type UnimplementedMsgServer struct {
 
 func (UnimplementedMsgServer) CreateCollateralToken(context.Context, *MsgCreateCollateralToken) (*MsgCreateCollateralTokenResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateCollateralToken not implemented")
+}
+func (UnimplementedMsgServer) CreateSyntheticToken(context.Context, *MsgCreateSyntheticToken) (*MsgCreateSyntheticTokenResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateSyntheticToken not implemented")
 }
 func (UnimplementedMsgServer) RemoteTransfer(context.Context, *MsgRemoteTransfer) (*MsgRemoteTransferResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RemoteTransfer not implemented")
@@ -107,6 +122,24 @@ func _Msg_CreateCollateralToken_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_CreateSyntheticToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgCreateSyntheticToken)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).CreateSyntheticToken(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_CreateSyntheticToken_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).CreateSyntheticToken(ctx, req.(*MsgCreateSyntheticToken))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Msg_RemoteTransfer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(MsgRemoteTransfer)
 	if err := dec(in); err != nil {
@@ -135,6 +168,10 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateCollateralToken",
 			Handler:    _Msg_CreateCollateralToken_Handler,
+		},
+		{
+			MethodName: "CreateSyntheticToken",
+			Handler:    _Msg_CreateSyntheticToken_Handler,
 		},
 		{
 			MethodName: "RemoteTransfer",

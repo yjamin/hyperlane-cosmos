@@ -22,6 +22,29 @@ func NewWarpPayload(recipient []byte, amount big.Int) (WarpPayload, error) {
 	return WarpPayload{recipient: recipient, amount: amount}, nil
 }
 
+func ParseWarpPayload(payload []byte) (WarpPayload, error) {
+	if len(payload) != 64 {
+		return WarpPayload{}, errors.New("payload is invalid")
+	}
+
+	amount := big.NewInt(0).SetBytes(payload[32:])
+
+	return WarpPayload{
+		recipient: payload[0:32],
+		amount:    *amount,
+	}, nil
+}
+
+func (p WarpPayload) Recipient() []byte {
+	return p.recipient
+}
+
+func (p WarpPayload) Amount() *big.Int {
+	newInt := big.NewInt(0)
+	newInt.Set(&p.amount)
+	return newInt
+}
+
 func (p WarpPayload) Bytes() []byte {
 
 	intBytes := p.amount.Bytes()

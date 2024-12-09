@@ -5,12 +5,13 @@ import (
 	"cosmossdk.io/collections"
 	"cosmossdk.io/core/address"
 	storetypes "cosmossdk.io/core/store"
-	"encoding/hex"
 	"fmt"
 	"github.com/KYVENetwork/hyperlane-cosmos/util"
 	mailboxkeeper "github.com/KYVENetwork/hyperlane-cosmos/x/mailbox/keeper"
+	mailboxTypes "github.com/KYVENetwork/hyperlane-cosmos/x/mailbox/types"
 	"github.com/KYVENetwork/hyperlane-cosmos/x/warp/types"
 	"github.com/cosmos/cosmos-sdk/codec"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 )
@@ -67,12 +68,32 @@ func NewKeeper(
 	return k
 }
 
-func (k Keeper) Handle(ctx context.Context, origin uint32, sender util.HexAddress, body []byte) error {
+func (k Keeper) Handle(ctx context.Context, mailboxId util.HexAddress, origin uint32, sender util.HexAddress, message mailboxTypes.HyperlaneMessage) error {
 
-	// TODO implement
-	fmt.Println("Message Received")
-	fmt.Println(sender.String())
-	fmt.Println(hex.EncodeToString(body))
+	token, err := k.HypTokens.Get(ctx, message.Recipient.Bytes())
+	if err != nil {
+		return err
+	}
+
+	payload, err := types.ParseWarpPayload(message.Body)
+	if err != nil {
+		return err
+	}
+
+	if util.HexAddress(token.OriginMailbox).String() != mailboxId.String() {
+		return fmt.Errorf("invalid origin mailbox address")
+	}
+
+	// Check token type
+	goCtx := sdk.UnwrapSDKContext(ctx)
+	if token.TokenType == types.HYP_TOKEN_COLLATERAL {
+		// TODO emit event on failure
+		k.RemoteReceiveCollateral(goCtx, token, payload)
+	} else if token.TokenType == types.HYP_TOKEN {
+		k.RemoteReceiveSynthetic(goCtx, token, payload)
+	} else {
+		// TODO emit event
+	}
 
 	return nil
 }

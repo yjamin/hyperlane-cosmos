@@ -19,6 +19,7 @@ func GetTxCmd() *cobra.Command {
 
 	txCmd.AddCommand(
 		CmdCreateCollateralToken(),
+		CmdCreateSyntheticToken(),
 		CmdRemoteTransfer(),
 	)
 

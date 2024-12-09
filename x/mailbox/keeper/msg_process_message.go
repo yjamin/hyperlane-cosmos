@@ -30,7 +30,7 @@ func (ms msgServer) ProcessMessage(ctx context.Context, req *types.MsgProcessMes
 		return nil, err
 	}
 
-	if err = ms.k.ProcessMessage(goCtx, messageBytes, metadataBytes); err != nil {
+	if err = ms.k.ProcessMessage(goCtx, req.MailboxId, messageBytes, metadataBytes); err != nil {
 		return nil, err
 	}
 
