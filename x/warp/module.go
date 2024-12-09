@@ -1,12 +1,12 @@
-package mailbox
+package warp
 
 import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/KYVENetwork/hyperlane-cosmos/x/mailbox/client/cli"
-	keeper2 "github.com/KYVENetwork/hyperlane-cosmos/x/mailbox/keeper"
-	"github.com/KYVENetwork/hyperlane-cosmos/x/mailbox/types"
+	"github.com/KYVENetwork/hyperlane-cosmos/x/warp/client/cli"
+	keeper2 "github.com/KYVENetwork/hyperlane-cosmos/x/warp/keeper"
+	"github.com/KYVENetwork/hyperlane-cosmos/x/warp/types"
 	"github.com/spf13/cobra"
 
 	"cosmossdk.io/core/appmodule"
@@ -30,11 +30,11 @@ const ConsensusVersion = 1
 
 type AppModule struct {
 	cdc    codec.Codec
-	keeper *keeper2.Keeper
+	keeper keeper2.Keeper
 }
 
 // NewAppModule creates a new AppModule object
-func NewAppModule(cdc codec.Codec, keeper *keeper2.Keeper) AppModule {
+func NewAppModule(cdc codec.Codec, keeper keeper2.Keeper) AppModule {
 	return AppModule{
 		cdc:    cdc,
 		keeper: keeper,
@@ -45,21 +45,21 @@ func NewAppModuleBasic(m AppModule) module.AppModuleBasic {
 	return module.CoreAppModuleBasicAdaptor(m.Name(), m)
 }
 
-// Name returns the mailbox module's name.
+// Name returns the warp module's name.
 func (AppModule) Name() string { return types.ModuleName }
 
-// RegisterLegacyAminoCodec registers the mailbox module's types on the LegacyAmino codec.
+// RegisterLegacyAminoCodec registers the warp module's types on the LegacyAmino codec.
 // New modules do not need to support Amino.
 func (AppModule) RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {}
 
-// RegisterGRPCGatewayRoutes registers the gRPC Gateway routes for the mailbox module.
+// RegisterGRPCGatewayRoutes registers the gRPC Gateway routes for the warp module.
 func (AppModule) RegisterGRPCGatewayRoutes(clientCtx client.Context, mux *gwruntime.ServeMux) {
 	if err := types.RegisterQueryHandlerClient(context.Background(), mux, types.NewQueryClient(clientCtx)); err != nil {
 		panic(err)
 	}
 }
 
-// RegisterInterfaces registers interfaces and implementations of the mailbox module.
+// RegisterInterfaces registers interfaces and implementations of the warp module.
 func (AppModule) RegisterInterfaces(registry codectypes.InterfaceRegistry) {
 	types.RegisterInterfaces(registry)
 }
@@ -94,7 +94,7 @@ func (AppModule) ValidateGenesis(cdc codec.JSONCodec, _ client.TxEncodingConfig,
 	return data.Validate()
 }
 
-// InitGenesis performs genesis initialization for the mailbox module.
+// InitGenesis performs genesis initialization for the warp module.
 // It returns no validator updates.
 func (am AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONCodec, data json.RawMessage) {
 	var genesisState types.GenesisState

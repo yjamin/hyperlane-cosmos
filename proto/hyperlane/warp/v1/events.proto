@@ -1,0 +1,9 @@
+syntax = "proto3";
+package hyperlane.warp.v1;
+
+option go_package = "github.com/KYVENetwork/hyperlane-cosmos/x/warp/types";
+
+message RemoteTransfer {
+  uint32 destination_domain = 1;
+  string recipient_address = 2;
+}

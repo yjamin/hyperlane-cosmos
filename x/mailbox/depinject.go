@@ -5,7 +5,11 @@ import (
 	"cosmossdk.io/core/appmodule"
 	"cosmossdk.io/core/store"
 	"cosmossdk.io/depinject"
+	"fmt"
 	"github.com/KYVENetwork/hyperlane-cosmos/x/mailbox/keeper"
+	"github.com/KYVENetwork/hyperlane-cosmos/x/mailbox/types"
+	"golang.org/x/exp/maps"
+	"sort"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
@@ -25,6 +29,7 @@ func init() {
 	appmodule.Register(
 		&modulev1.Module{},
 		appmodule.Provide(ProvideModule),
+		appmodule.Invoke(InvokeSetMailboxHooks),
 	)
 }
 
@@ -42,7 +47,7 @@ type ModuleOutputs struct {
 	depinject.Out
 
 	Module appmodule.AppModule
-	Keeper keeper.Keeper
+	Keeper *keeper.Keeper
 }
 
 func ProvideModule(in ModuleInputs) ModuleOutputs {
@@ -53,7 +58,41 @@ func ProvideModule(in ModuleInputs) ModuleOutputs {
 	}
 
 	k := keeper.NewKeeper(in.Cdc, in.AddressCodec, in.StoreService, authority.String())
-	m := NewAppModule(in.Cdc, k)
+	m := NewAppModule(in.Cdc, &k)
 
-	return ModuleOutputs{Module: m, Keeper: k}
+	return ModuleOutputs{Module: m, Keeper: &k}
+}
+
+func InvokeSetMailboxHooks(
+	keeper *keeper.Keeper,
+	mailboxHooks map[string]types.MailboxHooksWrapper,
+) error {
+	if keeper != nil && mailboxHooks == nil {
+		return nil
+	}
+
+	modNames := maps.Keys(mailboxHooks)
+	order := modNames
+	sort.Strings(order)
+
+	if len(order) != len(modNames) {
+		return fmt.Errorf("len(hooks_order: %v) != len(hooks modules: %v)", order, modNames)
+	}
+
+	if len(modNames) == 0 {
+		return nil
+	}
+
+	var multiHooks types.MultiMailboxHooks
+	for _, modName := range order {
+		hook, ok := mailboxHooks[modName]
+		if !ok {
+			return fmt.Errorf("can't find mailbox hooks for module %s", modName)
+		}
+
+		multiHooks = append(multiHooks, hook)
+	}
+
+	keeper.SetHooks(multiHooks)
+	return nil
 }

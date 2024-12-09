@@ -17,9 +17,11 @@ type Keeper struct {
 	// typically, this should be the x/gov module account.
 	authority string
 
+	hooks types.MailboxHooks
+
 	// state management
-	Mailboxes collections.Map[string, types.Mailbox]
-	Messages  collections.KeySet[collections.Pair[string, []byte]]
+	Mailboxes collections.Map[[]byte, types.Mailbox]
+	Messages  collections.KeySet[collections.Pair[[]byte, []byte]]
 	Params    collections.Item[types.Params]
 	Schema    collections.Schema
 }
@@ -35,9 +37,10 @@ func NewKeeper(cdc codec.BinaryCodec, addressCodec address.Codec, storeService s
 		cdc:          cdc,
 		addressCodec: addressCodec,
 		authority:    authority,
-		Mailboxes:    collections.NewMap(sb, types.MailboxesKey, "mailboxes", collections.StringKey, codec.CollValue[types.Mailbox](cdc)),
-		Messages:     collections.NewKeySet(sb, types.MessagesKey, "messages", collections.PairKeyCodec(collections.StringKey, collections.BytesKey)),
+		Mailboxes:    collections.NewMap(sb, types.MailboxesKey, "mailboxes", collections.BytesKey, codec.CollValue[types.Mailbox](cdc)),
+		Messages:     collections.NewKeySet(sb, types.MessagesKey, "messages", collections.PairKeyCodec(collections.BytesKey, collections.BytesKey)),
 		Params:       collections.NewItem(sb, types.ParamsKey, "params", codec.CollValue[types.Params](cdc)),
+		hooks:        nil,
 	}
 
 	schema, err := sb.Build()
@@ -48,4 +51,24 @@ func NewKeeper(cdc codec.BinaryCodec, addressCodec address.Codec, storeService s
 	k.Schema = schema
 
 	return k
+}
+
+// Hooks gets the hooks for staking *Keeper {
+func (k *Keeper) Hooks() types.MailboxHooks {
+	if k.hooks == nil {
+		// return a no-op implementation if no hooks are set
+		return types.MultiMailboxHooks{}
+	}
+
+	return k.hooks
+}
+
+// SetHooks sets the validator hooks.  In contrast to other receivers, this method must take a pointer due to nature
+// of the hooks interface and SDK start up sequence.
+func (k *Keeper) SetHooks(sh types.MailboxHooks) {
+	if k.hooks != nil {
+		panic("cannot set mailbox hooks twice")
+	}
+
+	k.hooks = sh
 }

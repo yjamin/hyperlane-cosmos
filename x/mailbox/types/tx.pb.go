@@ -127,6 +127,7 @@ type MsgDispatchMessage struct {
 	Destination uint32 `protobuf:"varint,3,opt,name=destination,proto3" json:"destination,omitempty"`
 	// TODO: Determine how this should look like to make it EVM-compatible.
 	// Hex encoded
+	// TODO: Use bytes
 	Recipient string `protobuf:"bytes,4,opt,name=recipient,proto3" json:"recipient,omitempty"`
 	Body      string `protobuf:"bytes,5,opt,name=body,proto3" json:"body,omitempty"`
 }

@@ -13,12 +13,12 @@ import (
 var _ types.QueryServer = queryServer{}
 
 // NewQueryServerImpl returns an implementation of the module QueryServer.
-func NewQueryServerImpl(k Keeper) types.QueryServer {
+func NewQueryServerImpl(k *Keeper) types.QueryServer {
 	return queryServer{k}
 }
 
 type queryServer struct {
-	k Keeper
+	k *Keeper
 }
 
 func (qs queryServer) Mailboxes(ctx context.Context, _ *types.QueryMailboxesRequest) (*types.QueryMailboxesResponse, error) {
