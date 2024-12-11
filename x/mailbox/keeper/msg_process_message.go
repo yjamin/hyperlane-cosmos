@@ -2,10 +2,9 @@ package keeper
 
 import (
 	"context"
-	"encoding/hex"
+	"github.com/KYVENetwork/hyperlane-cosmos/util"
 	"github.com/KYVENetwork/hyperlane-cosmos/x/mailbox/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"strings"
 )
 
 func (ms msgServer) ProcessMessage(ctx context.Context, req *types.MsgProcessMessage) (*types.MsgProcessMessageResponse, error) {
@@ -13,19 +12,13 @@ func (ms msgServer) ProcessMessage(ctx context.Context, req *types.MsgProcessMes
 	goCtx := sdk.UnwrapSDKContext(ctx)
 
 	// Decode and parse message
-	if strings.HasPrefix(req.Message, "0x") {
-		req.Message = req.Message[2:]
-	}
-	messageBytes, err := hex.DecodeString(req.Message)
+	messageBytes, err := util.DecodeEthHex(req.Message)
 	if err != nil {
 		return nil, err
 	}
 
 	// Decode and parse metadata
-	if strings.HasPrefix(req.Metadata, "0x") {
-		req.Metadata = req.Metadata[2:]
-	}
-	metadataBytes, err := hex.DecodeString(req.Metadata)
+	metadataBytes, err := util.DecodeEthHex(req.Metadata)
 	if err != nil {
 		return nil, err
 	}

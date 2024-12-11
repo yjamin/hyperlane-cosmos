@@ -2,28 +2,23 @@ package keeper
 
 import (
 	"context"
+	"fmt"
 	"github.com/KYVENetwork/hyperlane-cosmos/util"
 	"github.com/KYVENetwork/hyperlane-cosmos/x/mailbox/types"
 )
 
-func getMailboxCount(ctx context.Context, ms msgServer) (int, error) {
-	it, err := ms.k.Mailboxes.Iterate(ctx, nil)
-	if err != nil {
-		return 0, err
-	}
-
-	mKeys, err := it.Keys()
-	if err != nil {
-		return 0, err
-	}
-
-	return len(mKeys), nil
-}
-
 func (ms msgServer) CreateMailbox(ctx context.Context, req *types.MsgCreateMailbox) (*types.MsgCreateMailboxResponse, error) {
-	mailboxCount, err := getMailboxCount(ctx, ms)
+	mailboxCount, err := ms.k.MailboxesSequence.Next(ctx)
 	if err != nil {
 		return nil, err
+	}
+
+	ismExists, err := ms.k.ismKeeper.IsmIdExists(ctx, req.Ism)
+	if err != nil {
+		return nil, err
+	}
+	if !ismExists {
+		return nil, fmt.Errorf("ISM %s doesn't exist", req.Ism)
 	}
 
 	prefixedId := util.CreateHexAddress(types.ModuleName, int64(mailboxCount))

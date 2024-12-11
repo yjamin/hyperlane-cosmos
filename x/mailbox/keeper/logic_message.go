@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"cosmossdk.io/collections"
+	"encoding/hex"
 	"fmt"
 	"github.com/KYVENetwork/hyperlane-cosmos/util"
 	"github.com/KYVENetwork/hyperlane-cosmos/x/mailbox/types"
@@ -46,8 +47,15 @@ func (k Keeper) ProcessMessage(ctx sdk.Context, mailboxIdString string, rawMessa
 		return err
 	}
 
-	// TODO: Verify ISM
-	_ = metadata
+	// TODO: Use message.String()
+	// message.String() != fmt.Sprintf("0x%s", hex.EncodeToString(rawMessage))
+	verified, err := k.ismKeeper.Verify(ctx, mailbox.Ism, metadata, fmt.Sprintf("0x%s", hex.EncodeToString(rawMessage)))
+	if err != nil {
+		return err
+	}
+	if !verified {
+		return fmt.Errorf("threshold not reached")
+	}
 
 	_ = k.Hooks().Handle(ctx, mailboxId, message.Origin, message.Sender, message)
 

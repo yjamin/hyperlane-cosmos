@@ -1,0 +1,41 @@
+syntax = "proto3";
+package hyperlane.ism.v1;
+
+option go_package = "github.com/KYVENetwork/hyperlane-cosmos/x/ism/types";
+
+import "gogoproto/gogo.proto";
+import "hyperlane/ism/v1/types.proto";
+import "google/api/annotations.proto";
+import "cosmos/query/v1/query.proto";
+import "amino/amino.proto";
+
+// Msg defines the module Msg service.
+service Query {
+  rpc Isms(QueryMultiSigIsmRequest) returns (QueryMultiSigIsmResponse) {
+    option (google.api.http).get = "/hyperlane/ism/v1/isms";
+  }
+
+// Params returns the module parameters.
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/hyperlane/ism/v1/params";
+  }
+}
+
+message QueryMultiSigIsmRequest {}
+
+// QueryParamsResponse is the response type for the Query/Params RPC method.
+message QueryMultiSigIsmResponse {
+  // params defines the parameters of the module.
+  repeated MultiSigIsm ism = 1
+  [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+}
+
+// QueryParamsRequest is the request type for the Query/Params RPC method.
+message QueryParamsRequest {}
+
+// QueryParamsResponse is the response type for the Query/Params RPC method.
+message QueryParamsResponse {
+  // params defines the parameters of the module.
+  Params params = 1
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+}
