@@ -68,6 +68,11 @@ message MsgRemoteTransfer {
     (gogoproto.nullable)   = false,
     (amino.dont_omitempty) = true
   ];
+
+  // IGP
+  string igp_id = 5;
+  string gas_limit = 6 [(gogoproto.customtype) = "cosmossdk.io/math.Int", (gogoproto.nullable) = false];
+  string max_fee = 7 [(gogoproto.customtype) = "cosmossdk.io/math.Int", (gogoproto.nullable) = false];
 }
 
 message MsgRemoteTransferResponse {

@@ -3,6 +3,7 @@ package cli
 import (
 	"cosmossdk.io/math"
 	"errors"
+	"fmt"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
@@ -29,11 +30,24 @@ func CmdRemoteTransfer() *cobra.Command {
 				return err
 			}
 
+			gasLimitInt, ok := math.NewIntFromString(gasLimit)
+			if !ok {
+				return errors.New("failed to convert `gasLimit` into math.Int")
+			}
+
+			maxFeeInt, ok := math.NewIntFromString(maxFee)
+			if !ok {
+				return errors.New("failed to convert `maxFee` into math.Int")
+			}
+
 			msg := types.MsgRemoteTransfer{
 				TokenId:   tokenId,
 				Sender:    clientCtx.GetFromAddress().String(),
 				Recipient: recipient,
 				Amount:    argAmount,
+				IgpId:     igpId,
+				GasLimit:  gasLimitInt,
+				MaxFee:    maxFeeInt,
 			}
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
@@ -41,6 +55,16 @@ func CmdRemoteTransfer() *cobra.Command {
 	}
 
 	flags.AddTxFlagsToCmd(cmd)
+
+	cmd.Flags().StringVar(&igpId, "igp-id", "", "custom InterchainGasPaymaster ID; only used when IGP is not required")
+
+	cmd.Flags().StringVar(&gasLimit, "gas-limit", "50000", "InterchainGasPayment gas limit (default: 50,000)")
+
+	// TODO: Use default value
+	cmd.Flags().StringVar(&maxFee, "max-hyperlane-fee", "0", "maximum Hyperlane InterchainGasPayment")
+	if err := cmd.MarkFlagRequired("max-hyperlane-fee"); err != nil {
+		panic(fmt.Errorf("flag 'max-hyperlane-fee' is required: %w", err))
+	}
 
 	return cmd
 }

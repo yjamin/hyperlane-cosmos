@@ -27,7 +27,7 @@ func multiSigDigest(metadata *types.Metadata, message *mailboxTypes.HyperlaneMes
 
 func (k Keeper) Verify(ctx context.Context, ismId util.HexAddress, rawMetadata []byte, message mailboxTypes.HyperlaneMessage) (verified bool, err error) {
 	// Retrieve ISM
-	ism, err := k.Isms.Get(ctx, ismId.String())
+	ism, err := k.Isms.Get(ctx, ismId.Bytes())
 	if err != nil {
 		return false, err
 	}
@@ -94,8 +94,8 @@ func (k Keeper) Verify(ctx context.Context, ismId util.HexAddress, rawMetadata [
 	}
 }
 
-func (k Keeper) IsmIdExists(ctx context.Context, ismId string) (bool, error) {
-	ism, err := k.Isms.Has(ctx, ismId)
+func (k Keeper) IsmIdExists(ctx context.Context, ismId util.HexAddress) (bool, error) {
+	ism, err := k.Isms.Has(ctx, ismId.Bytes())
 	if err != nil {
 		return false, err
 	}

@@ -9,7 +9,7 @@ import (
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/mailbox/types"
 	"github.com/cosmos/cosmos-sdk/codec"
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 )
 
 type Keeper struct {
@@ -30,30 +30,41 @@ type Keeper struct {
 	MailboxesSequence  collections.Sequence
 	Validators         collections.Map[[]byte, types.Validator]
 	ValidatorsSequence collections.Sequence
-	Params             collections.Item[types.Params]
-	Schema             collections.Schema
+	// IGP
+	Igp                        collections.Map[[]byte, types.Igp]
+	IgpDestinationGasConfigMap collections.Map[collections.Pair[[]byte, uint32], types.DestinationGasConfig]
+	IgpSequence                collections.Sequence
+
+	Params collections.Item[types.Params]
+	Schema collections.Schema
+
+	bankKeeper bankkeeper.Keeper
 }
 
 // NewKeeper creates a new Keeper instance
-func NewKeeper(cdc codec.BinaryCodec, addressCodec address.Codec, storeService storetypes.KVStoreService, authority string, ismKeeper types.IsmKeeper) Keeper {
+func NewKeeper(cdc codec.BinaryCodec, addressCodec address.Codec, storeService storetypes.KVStoreService, authority string, ismKeeper types.IsmKeeper, bankKeeper bankkeeper.Keeper) Keeper {
 	if _, err := addressCodec.StringToBytes(authority); err != nil {
 		panic(fmt.Errorf("invalid authority address: %w", err))
 	}
 
 	sb := collections.NewSchemaBuilder(storeService)
 	k := Keeper{
-		cdc:                cdc,
-		addressCodec:       addressCodec,
-		authority:          authority,
-		Mailboxes:          collections.NewMap(sb, types.MailboxesKey, "mailboxes", collections.BytesKey, codec.CollValue[types.Mailbox](cdc)),
-		Messages:           collections.NewKeySet(sb, types.MessagesKey, "messages", collections.BytesKey),
-		Params:             collections.NewItem(sb, types.ParamsKey, "params", codec.CollValue[types.Params](cdc)),
-		hooks:              nil,
-		MailboxesSequence:  collections.NewSequence(sb, types.MailboxesSequenceKey, "mailboxes_sequence"),
-		Validators:         collections.NewMap(sb, types.ValidatorsKey, "validators", collections.BytesKey, codec.CollValue[types.Validator](cdc)),
-		ValidatorsSequence: collections.NewSequence(sb, types.ValidatorsSequencesKey, "validators_sequence"),
-		ismKeeper:          ismKeeper,
-		ReceiverIsmMapping: collections.NewMap(sb, types.ReceiverIsmKey, "receiver_ism", collections.BytesKey, collections.BytesValue),
+		cdc:                        cdc,
+		addressCodec:               addressCodec,
+		authority:                  authority,
+		Mailboxes:                  collections.NewMap(sb, types.MailboxesKey, "mailboxes", collections.BytesKey, codec.CollValue[types.Mailbox](cdc)),
+		Messages:                   collections.NewKeySet(sb, types.MessagesKey, "messages", collections.BytesKey),
+		Params:                     collections.NewItem(sb, types.ParamsKey, "params", codec.CollValue[types.Params](cdc)),
+		hooks:                      nil,
+		MailboxesSequence:          collections.NewSequence(sb, types.MailboxesSequenceKey, "mailboxes_sequence"),
+		Validators:                 collections.NewMap(sb, types.ValidatorsKey, "validators", collections.BytesKey, codec.CollValue[types.Validator](cdc)),
+		ValidatorsSequence:         collections.NewSequence(sb, types.ValidatorsSequencesKey, "validators_sequence"),
+		Igp:                        collections.NewMap(sb, types.IgpKey, "igp", collections.BytesKey, codec.CollValue[types.Igp](cdc)),
+		IgpDestinationGasConfigMap: collections.NewMap(sb, types.IgpDestinationGasConfigMapKey, "igp_destination_gas_config_map", collections.PairKeyCodec(collections.BytesKey, collections.Uint32Key), codec.CollValue[types.DestinationGasConfig](cdc)),
+		IgpSequence:                collections.NewSequence(sb, types.IgpSequenceKey, "igp_sequence"),
+		ismKeeper:                  ismKeeper,
+		ReceiverIsmMapping:         collections.NewMap(sb, types.ReceiverIsmKey, "receiver_ism", collections.BytesKey, collections.BytesValue),
+		bankKeeper:                 bankKeeper,
 	}
 
 	schema, err := sb.Build()
@@ -66,8 +77,22 @@ func NewKeeper(cdc codec.BinaryCodec, addressCodec address.Codec, storeService s
 	return k
 }
 
-func (k *Keeper) RegisterReceiverIsm(ctx context.Context, receiver util.HexAddress, ismId util.HexAddress) error {
-	exists, err := k.ismKeeper.IsmIdExists(ctx, ismId.String())
+func (k *Keeper) RegisterReceiverIsm(ctx context.Context, receiver util.HexAddress, mailboxId util.HexAddress, ismId string) error {
+	prefixedIsmId, err := util.DecodeHexAddress(ismId)
+	if err != nil || ismId == "" {
+		// Use DefaultISM if no ISM is specified
+		mailbox, err := k.Mailboxes.Get(ctx, mailboxId.Bytes())
+		if err != nil {
+			return err
+		}
+
+		prefixedIsmId, err = util.DecodeHexAddress(mailbox.DefaultIsm)
+		if err != nil {
+			return err
+		}
+	}
+
+	exists, err := k.ismKeeper.IsmIdExists(ctx, prefixedIsmId)
 	if err != nil || !exists {
 		return err
 	}
@@ -77,16 +102,7 @@ func (k *Keeper) RegisterReceiverIsm(ctx context.Context, receiver util.HexAddre
 		return err
 	}
 
-	return k.ReceiverIsmMapping.Set(ctx, receiver.Bytes(), ismId.Bytes())
-}
-
-func (k *Keeper) PostDispatchMerkleTree(ctx context.Context, messageId string, index uint32) {
-	sdkCtx := sdk.UnwrapSDKContext(ctx)
-
-	_ = sdkCtx.EventManager().EmitTypedEvent(&types.InsertedIntoTree{
-		MessageId: messageId,
-		Index:     index,
-	})
+	return k.ReceiverIsmMapping.Set(ctx, receiver.Bytes(), prefixedIsmId.Bytes())
 }
 
 // Hooks gets the hooks for staking *Keeper {
@@ -107,4 +123,12 @@ func (k *Keeper) SetHooks(sh types.MailboxHooks) {
 	}
 
 	k.hooks = sh
+}
+
+func (k Keeper) IgpIdExists(ctx context.Context, igpId util.HexAddress) (bool, error) {
+	igp, err := k.Igp.Has(ctx, igpId.Bytes())
+	if err != nil {
+		return false, err
+	}
+	return igp, nil
 }

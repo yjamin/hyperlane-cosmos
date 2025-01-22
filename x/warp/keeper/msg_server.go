@@ -39,11 +39,7 @@ func (ms msgServer) CreateSyntheticToken(ctx context.Context, msg *types.MsgCrea
 
 	tokenId := util.CreateHexAddress(types.ModuleName, int64(next))
 
-	ismId, err := util.DecodeHexAddress(msg.IsmId)
-	if err != nil {
-		return nil, err
-	}
-	err = ms.k.mailboxKeeper.RegisterReceiverIsm(ctx, tokenId, ismId)
+	err = ms.k.mailboxKeeper.RegisterReceiverIsm(ctx, tokenId, mailboxId, msg.IsmId)
 	if err != nil {
 		return nil, err
 	}
@@ -91,11 +87,7 @@ func (ms msgServer) CreateCollateralToken(ctx context.Context, msg *types.MsgCre
 
 	tokenId := util.CreateHexAddress(types.ModuleName, int64(next))
 
-	ismId, err := util.DecodeHexAddress(msg.IsmId)
-	if err != nil {
-		return nil, err
-	}
-	err = ms.k.mailboxKeeper.RegisterReceiverIsm(ctx, tokenId, ismId)
+	err = ms.k.mailboxKeeper.RegisterReceiverIsm(ctx, tokenId, mailboxId, msg.IsmId)
 	if err != nil {
 		return nil, err
 	}
@@ -131,13 +123,13 @@ func (ms msgServer) RemoteTransfer(ctx context.Context, msg *types.MsgRemoteTran
 
 	var messageResultId string
 	if token.TokenType == types.HYP_TOKEN_COLLATERAL {
-		result, err := ms.k.RemoteTransferCollateral(goCtx, token, msg.Sender, msg.Recipient, msg.Amount)
+		result, err := ms.k.RemoteTransferCollateral(goCtx, token, msg.Sender, msg.Recipient, msg.Amount, msg.IgpId, msg.GasLimit, msg.MaxFee)
 		if err != nil {
 			return nil, err
 		}
 		messageResultId = result.String()
 	} else if token.TokenType == types.HYP_TOKEN_SYNTHETIC {
-		result, err := ms.k.RemoteTransferSynthetic(goCtx, token, msg.Sender, msg.Recipient, msg.Amount)
+		result, err := ms.k.RemoteTransferSynthetic(goCtx, token, msg.Sender, msg.Recipient, msg.Amount, msg.IgpId, msg.GasLimit, msg.MaxFee)
 		if err != nil {
 			return nil, err
 		}

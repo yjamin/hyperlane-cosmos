@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"cosmossdk.io/math"
 	"fmt"
 
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
@@ -85,6 +86,11 @@ func (k Keeper) DispatchMessage(
 	// sender address on the origin chain (e.g. token id)
 	sender util.HexAddress,
 	body []byte,
+	// Custom IGP settings
+	cosmosSender string,
+	customIgpId string,
+	gasLimit math.Int,
+	maxFee math.Int,
 ) (messageId util.HexAddress, error error) {
 	mailbox, err := k.Mailboxes.Get(ctx, originMailboxId.Bytes())
 	if err != nil {
@@ -129,6 +135,24 @@ func (k Keeper) DispatchMessage(
 	mailbox.Tree = types.ProtoFromTree(tree)
 
 	err = k.Mailboxes.Set(ctx, originMailboxId.Bytes(), mailbox)
+	if err != nil {
+		return util.HexAddress{}, err
+	}
+
+	// Interchain Gas Payment
+	igpId, err := util.DecodeHexAddress(mailbox.Igp.Id)
+	if err != nil {
+		return util.HexAddress{}, err
+	}
+
+	if !mailbox.Igp.Required && customIgpId != "" {
+		igpId, err = util.DecodeHexAddress(customIgpId)
+		if err != nil {
+			return util.HexAddress{}, nil
+		}
+	}
+
+	err = k.PayForGas(ctx, cosmosSender, igpId, hypMsg.Id().String(), destinationDomain, gasLimit, maxFee)
 	if err != nil {
 		return util.HexAddress{}, err
 	}

@@ -19,6 +19,6 @@ type MailboxHooksWrapper struct{ MailboxHooks }
 func (MailboxHooksWrapper) IsOnePerModuleType() {}
 
 type IsmKeeper interface {
-	IsmIdExists(ctx context.Context, ismId string) (bool, error)
+	IsmIdExists(ctx context.Context, ismId util.HexAddress) (bool, error)
 	Verify(ctx context.Context, ismId util.HexAddress, metadata []byte, message HyperlaneMessage) (valid bool, err error)
 }

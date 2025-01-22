@@ -21,6 +21,15 @@ service Msg {
 
   rpc AnnounceValidator(MsgAnnounceValidator) returns (MsgAnnounceValidatorResponse);
 
+  // IGP
+  rpc CreateIGP(MsgCreateIgp) returns (MsgCreateIgpResponse);
+
+  rpc SetDestinationGasConfig(MsgSetDestinationGasConfig) returns (MsgSetDestinationGasConfigResponse);
+
+  rpc PayForGas(MsgPayForGas) returns (MsgPayForGasResponse);
+
+  rpc Claim(MsgClaim) returns (MsgClaimResponse);
+
   // UpdateParams updates the module parameters.
   rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
 }
@@ -31,6 +40,9 @@ message MsgCreateMailbox {
 
   // sender is the message sender.
   string creator = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string default_ism = 2;
+
+  InterchainGasPaymaster igp = 3;
 }
 
 message MsgCreateMailboxResponse {}
@@ -44,6 +56,11 @@ message MsgDispatchMessage {
   uint32 destination = 3;
   string recipient = 4;
   string body = 5;
+
+  // IGP
+  string igp_id = 6;
+  string gas_limit = 7 [(gogoproto.customtype) = "cosmossdk.io/math.Int", (gogoproto.nullable) = false];
+  string max_fee = 8 [(gogoproto.customtype) = "cosmossdk.io/math.Int", (gogoproto.nullable) = false];
 }
 
 message MsgDispatchMessageResponse {
@@ -74,6 +91,53 @@ message MsgAnnounceValidator {
 }
 
 message MsgAnnounceValidatorResponse {}
+
+// IGP
+message MsgCreateIgp {
+  option (cosmos.msg.v1.signer) = "owner";
+  option (amino.name) = "hyperlane/igp/MsgCreateIGP";
+
+  string owner = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string denom = 2;
+}
+
+message MsgCreateIgpResponse {}
+
+message MsgSetDestinationGasConfig {
+  option (cosmos.msg.v1.signer) = "owner";
+  option (amino.name) = "hyperlane/igp/MsgSetDestinationGasConfig";
+
+  string owner = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string igp_id = 2;
+
+  DestinationGasConfig destination_gas_config = 3;
+}
+
+message MsgSetDestinationGasConfigResponse {}
+
+message MsgPayForGas {
+  option (cosmos.msg.v1.signer) = "sender";
+  option (amino.name) = "hyperlane/igp/MsgPayForGas";
+
+  string sender = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string igp_id = 2;
+  string message_id = 3;
+  uint32 destination_domain = 4;
+  string gas_limit = 5 [(gogoproto.customtype) = "cosmossdk.io/math.Int", (gogoproto.nullable) = false];
+  string amount = 6 [(gogoproto.customtype) = "cosmossdk.io/math.Int", (gogoproto.nullable) = false];
+}
+
+message MsgPayForGasResponse {}
+
+message MsgClaim {
+  option (cosmos.msg.v1.signer) = "sender";
+  option (amino.name) = "hyperlane/igp/MsgClaim";
+
+  string sender = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string igp_id = 2;
+}
+
+message MsgClaimResponse {}
 
 // MsgUpdateParams is the Msg/UpdateParams request type.
 message MsgUpdateParams {
