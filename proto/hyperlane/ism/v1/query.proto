@@ -12,7 +12,11 @@ import "amino/amino.proto";
 // Msg defines the module Msg service.
 service Query {
   rpc Isms(QueryIsmsRequest) returns (QueryIsmsResponse) {
-    option (google.api.http).get = "/hyperlane/ism/v1/isms";
+    option (google.api.http).get = "/hyperlane/v1/isms";
+  }
+
+  rpc Ism(QueryIsmRequest) returns (QueryIsmResponse) {
+    option (google.api.http).get = "/hyperlane/v1/isms/{id}";
   }
 
 // Params returns the module parameters.
@@ -21,7 +25,7 @@ service Query {
   }
 
   rpc VerifyDryRun(QueryVerifyDryRunRequest) returns (QueryVerifyDryRunResponse) {
-    option (google.api.http).get = "/hyperlane/ism/v1/verify_dry_run/{ism_id}/{message}/{metadata}";
+    option (google.api.http).get = "/hyperlane/v1/verify_dry_run/{ism_id}/{message}/{metadata}";
   }
 }
 
@@ -29,6 +33,15 @@ message QueryIsmsRequest {}
 
 message QueryIsmsResponse {
   repeated Ism isms = 1
+  [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+}
+
+message QueryIsmRequest {
+  string id = 1;
+}
+
+message QueryIsmResponse {
+  Ism ism = 1
   [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
 }
 
