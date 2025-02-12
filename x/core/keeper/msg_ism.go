@@ -2,9 +2,11 @@ package keeper
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/core/types"
+	"github.com/ethereum/go-ethereum/crypto"
 )
 
 func (ms msgServer) CreateMultisigIsm(ctx context.Context, req *types.MsgCreateMultisigIsm) (*types.MsgCreateMultisigIsmResponse, error) {
@@ -20,6 +22,10 @@ func (ms msgServer) CreateMultisigIsm(ctx context.Context, req *types.MsgCreateM
 		Threshold:        req.MultiSig.Threshold,
 	}
 
+	if err = validateMultisigIsm(ism); err != nil {
+		return nil, err
+	}
+
 	newIsm := types.Ism{
 		Id:      prefixedId.String(),
 		IsmType: types.MESSAGE_ID_MULTISIG,
@@ -31,7 +37,7 @@ func (ms msgServer) CreateMultisigIsm(ctx context.Context, req *types.MsgCreateM
 		return nil, err
 	}
 
-	return &types.MsgCreateMultisigIsmResponse{}, nil
+	return &types.MsgCreateMultisigIsmResponse{Id: prefixedId.String()}, nil
 }
 
 func (ms msgServer) CreateNoopIsm(ctx context.Context, req *types.MsgCreateNoopIsm) (*types.MsgCreateNoopIsmResponse, error) {
@@ -53,5 +59,28 @@ func (ms msgServer) CreateNoopIsm(ctx context.Context, req *types.MsgCreateNoopI
 		return nil, err
 	}
 
-	return &types.MsgCreateNoopIsmResponse{}, nil
+	return &types.MsgCreateNoopIsmResponse{Id: prefixedId.String()}, nil
+}
+
+func validateMultisigIsm(ism types.MultiSigIsm) error {
+	if ism.Threshold == 0 {
+		return fmt.Errorf("threshold must be greater than zero")
+	}
+
+	if len(ism.ValidatorPubKeys) < int(ism.Threshold) {
+		return fmt.Errorf("validator pubkeys less than threshold")
+	}
+
+	for _, validatorPubKey := range ism.ValidatorPubKeys {
+		pubKey, err := util.DecodeEthHex(validatorPubKey)
+		if err != nil {
+			return fmt.Errorf("invalid validator pub key: %s", validatorPubKey)
+		}
+
+		_, err = crypto.UnmarshalPubkey(pubKey)
+		if err != nil {
+			return fmt.Errorf("invalid validator pub key: %s", validatorPubKey)
+		}
+	}
+	return nil
 }

@@ -71,7 +71,3 @@ func ParseFromCosmosAcc(cosmosAcc string) (HexAddress, error) {
 
 	return HexAddress(hexAddressBytes), nil
 }
-
-func CreateValidatorStorageKey(validator []byte) HexAddress {
-	return sha256.Sum256(validator)
-}
