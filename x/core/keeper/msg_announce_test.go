@@ -4,6 +4,10 @@ import (
 	"crypto/ecdsa"
 	"fmt"
 
+	"github.com/bcp-innovations/hyperlane-cosmos/x/core/keeper"
+
+	"cosmossdk.io/collections"
+
 	i "github.com/bcp-innovations/hyperlane-cosmos/tests/integration"
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/core/types"
@@ -65,7 +69,7 @@ var _ = Describe("msg_announce.go", Ordered, func() {
 
 		// Assert
 		Expect(err.Error()).To(Equal("validator cannot be empty"))
-		validateAnnouncement(s, "", []string{})
+		validateAnnouncement(s, "", []types.StorageLocation{})
 	})
 
 	It("AnnounceValidator (invalid) with invalid validator", func() {
@@ -92,7 +96,7 @@ var _ = Describe("msg_announce.go", Ordered, func() {
 
 		// Assert
 		Expect(err.Error()).To(Equal("invalid validator address"))
-		validateAnnouncement(s, "", []string{})
+		validateAnnouncement(s, "", []types.StorageLocation{})
 	})
 
 	It("AnnounceValidator (invalid) with empty storage location", func() {
@@ -119,7 +123,7 @@ var _ = Describe("msg_announce.go", Ordered, func() {
 
 		// Assert
 		Expect(err.Error()).To(Equal("storage location cannot be empty"))
-		validateAnnouncement(s, "", []string{})
+		validateAnnouncement(s, "", []types.StorageLocation{})
 	})
 
 	It("AnnounceValidator (invalid) with empty signature", func() {
@@ -140,7 +144,7 @@ var _ = Describe("msg_announce.go", Ordered, func() {
 
 		// Assert
 		Expect(err.Error()).To(Equal("signature cannot be empty"))
-		validateAnnouncement(s, "", []string{})
+		validateAnnouncement(s, "", []types.StorageLocation{})
 	})
 
 	It("AnnounceValidator (invalid) with invalid signature", func() {
@@ -161,7 +165,7 @@ var _ = Describe("msg_announce.go", Ordered, func() {
 
 		// Assert
 		Expect(err.Error()).To(Equal("invalid signature"))
-		validateAnnouncement(s, "", []string{})
+		validateAnnouncement(s, "", []types.StorageLocation{})
 	})
 
 	It("AnnounceValidator (invalid) with invalid signature recovery id", func() {
@@ -188,7 +192,7 @@ var _ = Describe("msg_announce.go", Ordered, func() {
 
 		// Assert
 		Expect(err.Error()).To(Equal("invalid signature recovery id"))
-		validateAnnouncement(s, "", []string{})
+		validateAnnouncement(s, "", []types.StorageLocation{})
 	})
 
 	It("AnnounceValidator (invalid) same storage location for validator (replay protection)", func() {
@@ -224,7 +228,7 @@ var _ = Describe("msg_announce.go", Ordered, func() {
 
 		// Assert
 		Expect(err.Error()).To(Equal(fmt.Sprintf("validator %s already announced storage location %s", validatorAddress, storageLocation)))
-		validateAnnouncement(s, validatorAddress, []string{storageLocation})
+		validateAnnouncement(s, validatorAddress, []types.StorageLocation{{Location: storageLocation, Id: 0}})
 	})
 
 	It("AnnounceValidator (invalid) for non-existing Mailbox ID", func() {
@@ -252,7 +256,7 @@ var _ = Describe("msg_announce.go", Ordered, func() {
 
 		// Assert
 		Expect(err.Error()).To(Equal(fmt.Sprintf("failed to find mailbox with id: %s", nonExistingMailboxId.String())))
-		validateAnnouncement(s, "", []string{})
+		validateAnnouncement(s, "", []types.StorageLocation{})
 	})
 
 	It("AnnounceValidator (invalid) for invalid Mailbox ID", func() {
@@ -279,7 +283,7 @@ var _ = Describe("msg_announce.go", Ordered, func() {
 
 		// Assert
 		Expect(err.Error()).To(Equal("invalid mailbox id"))
-		validateAnnouncement(s, "", []string{})
+		validateAnnouncement(s, "", []types.StorageLocation{})
 	})
 
 	It("AnnounceValidator (invalid) for non-matching signature validator pair", func() {
@@ -307,7 +311,7 @@ var _ = Describe("msg_announce.go", Ordered, func() {
 
 		// Assert
 		Expect(err.Error()).To(Equal(fmt.Sprintf("validator %s doesn't match signature. recovered address: %s", wrongValidatorAddress, correctValidatorAddress)))
-		validateAnnouncement(s, "", []string{})
+		validateAnnouncement(s, "", []types.StorageLocation{})
 	})
 
 	It("AnnounceValidator (valid)", func() {
@@ -334,7 +338,7 @@ var _ = Describe("msg_announce.go", Ordered, func() {
 
 		// Assert
 		Expect(err).To(BeNil())
-		validateAnnouncement(s, validatorAddress, []string{storageLocation})
+		validateAnnouncement(s, validatorAddress, []types.StorageLocation{{Location: storageLocation, Id: 0}})
 	})
 
 	It("AnnounceValidator (valid) add another storage location", func() {
@@ -373,7 +377,10 @@ var _ = Describe("msg_announce.go", Ordered, func() {
 
 		// Assert
 		Expect(err).To(BeNil())
-		validateAnnouncement(s, validatorAddress, []string{storageLocation, storageLocation2})
+		validateAnnouncement(s, validatorAddress, []types.StorageLocation{
+			{Location: storageLocation, Id: 0},
+			{Location: storageLocation2, Id: 1},
+		})
 	})
 })
 
@@ -401,7 +408,7 @@ func announce(privKey, storageLocation string, mailboxId util.HexAddress, localD
 	return util.EncodeEthHex(signedAnnouncement)
 }
 
-func validateAnnouncement(s *i.KeeperTestSuite, validatorAddress string, storageLocations []string) {
+func validateAnnouncement(s *i.KeeperTestSuite, validatorAddress string, storageLocations []types.StorageLocation) {
 	if validatorAddress == "" {
 		it, err := s.App().HyperlaneKeeper.Validators.Iterate(s.Ctx(), nil)
 		Expect(err).To(BeNil())
@@ -409,12 +416,33 @@ func validateAnnouncement(s *i.KeeperTestSuite, validatorAddress string, storage
 		validators, err := it.Values()
 		Expect(err).To(BeNil())
 		Expect(validators).To(HaveLen(0))
-	} else {
-		validatorAddressHex, err := util.DecodeEthHex(validatorAddress)
+
+		rng := collections.NewPrefixedPairRange[[]byte, uint64](nil)
+
+		iter, err := s.App().HyperlaneKeeper.StorageLocations.Iterate(s.Ctx(), rng)
 		Expect(err).To(BeNil())
 
-		validator, err := s.App().HyperlaneKeeper.Validators.Get(s.Ctx(), validatorAddressHex)
+		announcedStorageLocations, err := iter.Values()
 		Expect(err).To(BeNil())
-		Expect(validator.StorageLocations).To(Equal(storageLocations))
+		Expect(announcedStorageLocations).To(HaveLen(0))
+	} else {
+		validatorAddressBytes, err := util.DecodeEthHex(validatorAddress)
+		Expect(err).To(BeNil())
+
+		_, err = s.App().HyperlaneKeeper.Validators.Get(s.Ctx(), validatorAddressBytes)
+		Expect(err).To(BeNil())
+
+		rng := collections.NewPrefixedPairRange[[]byte, uint64](validatorAddressBytes)
+
+		iter, err := s.App().HyperlaneKeeper.StorageLocations.Iterate(s.Ctx(), rng)
+		Expect(err).To(BeNil())
+
+		announcedStorageLocations, err := iter.Values()
+		Expect(err).To(BeNil())
+		Expect(storageLocations).To(Equal(announcedStorageLocations))
+
+		latestAnnouncedStorageLocation, err := keeper.NewQueryServerImpl(s.App().HyperlaneKeeper).LatestAnnouncedStorageLocation(s.Ctx(), &types.QueryLatestAnnouncedStorageLocationRequest{ValidatorAddress: validatorAddress})
+		Expect(err).To(BeNil())
+		Expect(latestAnnouncedStorageLocation.StorageLocation).To(Equal(storageLocations[len(storageLocations)-1].Location))
 	}
 }

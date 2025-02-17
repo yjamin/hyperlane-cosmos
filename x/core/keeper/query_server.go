@@ -27,19 +27,56 @@ type queryServer struct {
 	k *Keeper
 }
 
+func (qs queryServer) LatestAnnouncedStorageLocation(ctx context.Context, req *types.QueryLatestAnnouncedStorageLocationRequest) (*types.QueryLatestAnnouncedStorageLocationResponse, error) {
+	validatorAddress, err := util.DecodeEthHex(req.ValidatorAddress)
+	if err != nil {
+		return nil, err
+	}
+
+	rng := collections.NewPrefixedPairRange[[]byte, uint64](validatorAddress)
+
+	iter, err := qs.k.StorageLocations.Iterate(ctx, rng)
+	if err != nil {
+		return nil, err
+	}
+
+	storageLocations, err := iter.Values()
+	if err != nil {
+		return nil, err
+	}
+
+	location := storageLocations[len(storageLocations)-1]
+
+	return &types.QueryLatestAnnouncedStorageLocationResponse{
+		StorageLocation: location.Location,
+	}, nil
+}
+
 func (qs queryServer) AnnouncedStorageLocations(ctx context.Context, req *types.QueryAnnouncedStorageLocationsRequest) (*types.QueryAnnouncedStorageLocationsResponse, error) {
 	validatorAddress, err := util.DecodeEthHex(req.ValidatorAddress)
 	if err != nil {
 		return nil, err
 	}
 
-	validator, err := qs.k.Validators.Get(ctx, validatorAddress)
+	rng := collections.NewPrefixedPairRange[[]byte, uint64](validatorAddress)
+
+	iter, err := qs.k.StorageLocations.Iterate(ctx, rng)
 	if err != nil {
 		return nil, err
 	}
 
+	storageLocations, err := iter.Values()
+	if err != nil {
+		return nil, err
+	}
+
+	locations := make([]*types.StorageLocation, len(storageLocations))
+	for i := range storageLocations {
+		locations[i] = &storageLocations[i]
+	}
+
 	return &types.QueryAnnouncedStorageLocationsResponse{
-		StorageLocations: validator.StorageLocations,
+		StorageLocations: locations,
 	}, nil
 }
 
