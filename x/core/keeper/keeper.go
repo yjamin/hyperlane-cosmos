@@ -8,6 +8,8 @@ import (
 	"cosmossdk.io/core/address"
 	storetypes "cosmossdk.io/core/store"
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
+	ismkeeper "github.com/bcp-innovations/hyperlane-cosmos/x/core/_interchain_security/keeper"
+	postdispatchkeeper "github.com/bcp-innovations/hyperlane-cosmos/x/core/_post_dispatch/keeper"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/core/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/types/query"
@@ -43,6 +45,13 @@ type Keeper struct {
 	Schema collections.Schema
 
 	bankKeeper types.BankKeeper
+
+	// REFACTORED
+	IsmKeeper ismkeeper.Keeper
+	ismHooks  types.InterchainSecurityHooks
+
+	PostDispatchKeeper postdispatchkeeper.Keeper
+	postDispatchHooks  types.PostDispatchHooks
 }
 
 // NewKeeper creates a new Keeper instance
@@ -71,6 +80,10 @@ func NewKeeper(cdc codec.BinaryCodec, addressCodec address.Codec, storeService s
 		IsmsSequence:               collections.NewSequence(sb, types.IsmsSequencesKey, "isms_sequence"),
 		ReceiverIsmMapping:         collections.NewMap(sb, types.ReceiverIsmKey, "receiver_ism", collections.BytesKey, collections.BytesValue),
 		bankKeeper:                 bankKeeper,
+
+		// REFACTORED
+		IsmKeeper:          ismkeeper.NewKeeper(cdc, storeService),
+		PostDispatchKeeper: postdispatchkeeper.NewKeeper(cdc, storeService),
 	}
 
 	schema, err := sb.Build()
@@ -113,6 +126,40 @@ func (k *Keeper) RegisterReceiverIsm(ctx context.Context, receiver util.HexAddre
 	return k.ReceiverIsmMapping.Set(ctx, receiver.Bytes(), prefixedIsmId.Bytes())
 }
 
+func (k *Keeper) PostDispatchHooks() types.PostDispatchHooks {
+	if k.postDispatchHooks == nil {
+		// return a no-op implementation if no hooks are set
+		return types.MultiPostDispatchHooks{}
+	}
+
+	return k.postDispatchHooks
+}
+
+func (k *Keeper) SetPostDispatchHooks(sh types.PostDispatchHooks) {
+	if k.postDispatchHooks != nil {
+		panic("cannot set mailbox hooks twice")
+	}
+
+	k.postDispatchHooks = sh
+}
+
+func (k *Keeper) IsmHooks() types.InterchainSecurityHooks {
+	if k.hooks == nil {
+		// return a no-op implementation if no hooks are set
+		return types.MultiInterchainSecurityHooks{}
+	}
+
+	return k.ismHooks
+}
+
+func (k *Keeper) SetIsmHooks(sh types.InterchainSecurityHooks) {
+	if k.ismHooks != nil {
+		panic("cannot set mailbox hooks twice")
+	}
+
+	k.ismHooks = sh
+}
+
 // Hooks gets the hooks for staking *Keeper {
 func (k *Keeper) Hooks() types.MailboxHooks {
 	if k.hooks == nil {
@@ -146,6 +193,7 @@ func (k Keeper) LocalDomain(ctx context.Context) (uint32, error) {
 	return params.Domain, err
 }
 
+// TODO out-source to utils
 func GetPaginatedFromMap[T any, K any](ctx context.Context, collection collections.Map[K, T], pagination *query.PageRequest) ([]T, *query.PageResponse, error) {
 	// Parse basic pagination
 	if pagination == nil {

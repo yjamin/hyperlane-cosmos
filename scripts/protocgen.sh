@@ -17,7 +17,8 @@ for dir in $proto_dirs; do
 done
 
 echo "--> Generating pulsar proto code"
-buf generate --template buf.gen.pulsar.yaml
+module_list=$(find . -name "*module.proto" -not -path "./hyperlane/core/_*" | tr '\n' ','  | sed 's/,$//')
+buf generate --template buf.gen.pulsar.yaml --path $module_list
 
 cd ..
 

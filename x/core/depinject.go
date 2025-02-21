@@ -16,7 +16,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
-	modulev1 "github.com/bcp-innovations/hyperlane-cosmos/api/core/module"
+	modulev1 "github.com/bcp-innovations/hyperlane-cosmos/api/core/module/v1"
 )
 
 var _ appmodule.AppModule = AppModule{}
@@ -31,7 +31,7 @@ func init() {
 	appmodule.Register(
 		&modulev1.Module{},
 		appmodule.Provide(ProvideModule),
-		appmodule.Invoke(InvokeSetMailboxHooks),
+		appmodule.Invoke(InvokeSetMailboxHooks, InvokeSetIsmHooks, InvokeSetPostDispatchHooks),
 	)
 }
 
@@ -98,5 +98,67 @@ func InvokeSetMailboxHooks(
 	}
 
 	keeper.SetHooks(multiHooks)
+	return nil
+}
+
+func InvokeSetIsmHooks(
+	keeper *keeper.Keeper,
+	ismHooks map[string]types.InterchainSecurityHooksWrapper,
+) error {
+	if keeper == nil {
+		return nil
+	}
+
+	modNames := maps.Keys(ismHooks)
+	order := modNames
+	sort.Strings(order)
+
+	if len(order) != len(modNames) {
+		return fmt.Errorf("len(hooks_order: %v) != len(hooks modules: %v)", order, modNames)
+	}
+
+	var multiHooks types.MultiInterchainSecurityHooks
+	for _, modName := range order {
+		hook, ok := ismHooks[modName]
+		if !ok {
+			return fmt.Errorf("can't find mailbox hooks for module %s", modName)
+		}
+
+		multiHooks = append(multiHooks, hook)
+	}
+	multiHooks = append(multiHooks, keeper.IsmKeeper)
+
+	keeper.SetIsmHooks(multiHooks)
+	return nil
+}
+
+func InvokeSetPostDispatchHooks(
+	keeper *keeper.Keeper,
+	pdHooks map[string]types.PostDispatchHooksWrapper,
+) error {
+	if keeper == nil {
+		return nil
+	}
+
+	modNames := maps.Keys(pdHooks)
+	order := modNames
+	sort.Strings(order)
+
+	if len(order) != len(modNames) {
+		return fmt.Errorf("len(hooks_order: %v) != len(hooks modules: %v)", order, modNames)
+	}
+
+	var multiHooks types.MultiPostDispatchHooks
+	for _, modName := range order {
+		hook, ok := pdHooks[modName]
+		if !ok {
+			return fmt.Errorf("can't find mailbox hooks for module %s", modName)
+		}
+
+		multiHooks = append(multiHooks, hook)
+	}
+	multiHooks = append(multiHooks, keeper.PostDispatchKeeper)
+
+	keeper.SetPostDispatchHooks(multiHooks)
 	return nil
 }

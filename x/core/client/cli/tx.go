@@ -3,9 +3,12 @@ package cli
 import (
 	"fmt"
 
+	pdmodule "github.com/bcp-innovations/hyperlane-cosmos/x/core/_post_dispatch"
+
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/spf13/cobra"
 
+	ism "github.com/bcp-innovations/hyperlane-cosmos/x/core/_interchain_security"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/core/types"
 )
 
@@ -30,6 +33,8 @@ func GetTxCmd() *cobra.Command {
 		NewIgpCmd(),
 		NewIsmCmd(),
 		NewMailboxCmd(),
+		ism.GetTxCmd(),
+		pdmodule.GetTxCmd(),
 	)
 
 	return txCmd
