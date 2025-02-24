@@ -14,7 +14,7 @@ import (
 
 func GetTxCmd() *cobra.Command {
 	txCmd := &cobra.Command{
-		Use:                        "ism-refactored", // TODO change command to "ism" once migrated
+		Use:                        "ism",
 		Short:                      "Hyperlane Interchain Security Module commands",
 		DisableFlagParsing:         true,
 		SuggestionsMinimumDistance: 2,
@@ -22,11 +22,41 @@ func GetTxCmd() *cobra.Command {
 	}
 
 	txCmd.AddCommand(
+		CmdAnnounceValidator(),
 		CmdCreateMultiSigIsm(),
 		CmdCreateNoopIsm(),
 	)
 
 	return txCmd
+}
+
+func CmdAnnounceValidator() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "announce-validator [address] [storage-location] [signature] [mailbox-id]",
+		Short: "Announce a Hyperlane validator",
+		Args:  cobra.ExactArgs(4),
+		RunE: func(cmd *cobra.Command, args []string) (err error) {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			msg := types.MsgAnnounceValidator{
+				Validator:       args[0],
+				StorageLocation: args[1],
+				// Expected to be Hex encoded
+				Signature: args[2],
+				MailboxId: args[3],
+				Creator:   clientCtx.GetFromAddress().String(),
+			}
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+
+	return cmd
 }
 
 func CmdCreateMultiSigIsm() *cobra.Command {

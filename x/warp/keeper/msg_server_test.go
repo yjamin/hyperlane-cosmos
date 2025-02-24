@@ -7,6 +7,7 @@ import (
 
 	i "github.com/bcp-innovations/hyperlane-cosmos/tests/integration"
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
+	ismTypes "github.com/bcp-innovations/hyperlane-cosmos/x/core/_interchain_security/types"
 	coreKeeper "github.com/bcp-innovations/hyperlane-cosmos/x/core/keeper"
 	coreTypes "github.com/bcp-innovations/hyperlane-cosmos/x/core/types"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/warp/keeper"
@@ -1031,20 +1032,18 @@ func createValidMailbox(s *i.KeeperTestSuite, creator string, ism string, igpReq
 }
 
 func createMultisigIsm(s *i.KeeperTestSuite, creator string) util.HexAddress {
-	res, err := s.RunTx(&coreTypes.MsgCreateMultisigIsm{
+	res, err := s.RunTx(&ismTypes.MsgCreateMerkleRootMultiSigIsm{
 		Creator: creator,
-		MultiSig: &coreTypes.MultiSigIsm{
-			Validators: []string{
-				"0xb05b6a0aa112b61a7aa16c19cac27d970692995e",
-				"0xa05b6a0aa112b61a7aa16c19cac27d970692995e",
-				"0xd05b6a0aa112b61a7aa16c19cac27d970692995e",
-			},
-			Threshold: 2,
+		Validators: []string{
+			"0xb05b6a0aa112b61a7aa16c19cac27d970692995e",
+			"0xa05b6a0aa112b61a7aa16c19cac27d970692995e",
+			"0xd05b6a0aa112b61a7aa16c19cac27d970692995e",
 		},
+		Threshold: 2,
 	})
 	Expect(err).To(BeNil())
 
-	var response coreTypes.MsgCreateMultisigIsmResponse
+	var response ismTypes.MsgCreateMerkleRootMultiSigIsmResponse
 	err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
 	Expect(err).To(BeNil())
 
@@ -1055,12 +1054,12 @@ func createMultisigIsm(s *i.KeeperTestSuite, creator string) util.HexAddress {
 }
 
 func createNoopIsm(s *i.KeeperTestSuite, creator string) util.HexAddress {
-	res, err := s.RunTx(&coreTypes.MsgCreateNoopIsm{
+	res, err := s.RunTx(&ismTypes.MsgCreateNoopIsm{
 		Creator: creator,
 	})
 	Expect(err).To(BeNil())
 
-	var response coreTypes.MsgCreateNoopIsmResponse
+	var response ismTypes.MsgCreateNoopIsmResponse
 	err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
 	Expect(err).To(BeNil())
 

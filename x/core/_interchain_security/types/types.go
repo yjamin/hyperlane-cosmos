@@ -1,10 +1,13 @@
 package types
 
 import (
-	"cosmossdk.io/collections"
+	"encoding/binary"
+	"slices"
+
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/gogoproto/proto"
+	"github.com/ethereum/go-ethereum/crypto"
 )
 
 type HyperlaneInterchainSecurityModule interface {
@@ -12,16 +15,18 @@ type HyperlaneInterchainSecurityModule interface {
 
 	GetId() uint64
 	ModuleType() uint8
-	Verify(ctx sdk.Context, metadata any, message util.HyperlaneMessage) (bool, error)
+	Verify(ctx sdk.Context, metadata []byte, message util.HyperlaneMessage) (bool, error)
 }
 
 var (
-	IsmsKey         = collections.NewPrefix(1)
-	IsmsSequenceKey = collections.NewPrefix(2)
+	IsmsKey             = []byte{SubModuleId, 0}
+	IsmsSequenceKey     = []byte{SubModuleId, 1}
+	StorageLocationsKey = []byte{SubModuleId, 2}
 )
 
 const (
-	SubModuleName = "ism"
+	SubModuleName       = "ism"
+	SubModuleId   uint8 = 1
 
 	HEX_ADDRESS_CLASS_IDENTIFIER = "coreism"
 )
@@ -40,3 +45,26 @@ const (
 	INTERCHAIN_SECURITY_MODULE_TPYE_WEIGHTED_MESSAGE_ID_MULTISIG
 	INTERCHAIN_SECURITY_MODULE_TPYE_OP_L2_TO_L1
 )
+
+func GetAnnouncementDigest(storageLocation string, domainId uint32, mailbox []byte) [32]byte {
+	var domainHashBytes []byte
+
+	domainIdBytes := make([]byte, 4)
+	binary.BigEndian.PutUint32(domainIdBytes, domainId)
+
+	// TODO: Check if all of them are required
+	domainHashBytes = slices.Concat(
+		domainIdBytes,
+		mailbox,
+		[]byte("HYPERLANE_ANNOUNCEMENT"),
+	)
+
+	domainHash := crypto.Keccak256Hash(domainHashBytes)
+
+	announcementDigestBytes := slices.Concat(
+		domainHash.Bytes(),
+		[]byte(storageLocation),
+	)
+
+	return crypto.Keccak256Hash(announcementDigestBytes)
+}

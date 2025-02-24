@@ -16,7 +16,7 @@ func (ms msgServer) CreateMailbox(ctx context.Context, req *types.MsgCreateMailb
 		return nil, fmt.Errorf("ism id %s is invalid: %s", req.DefaultIsm, err.Error())
 	}
 
-	exists, err := ms.k.IsmIdExists(ctx, ismId)
+	exists, err := ms.k.IsmKeeper.IsmIdExists(ctx, ismId)
 	if err != nil {
 		return nil, err
 	}
@@ -46,7 +46,7 @@ func (ms msgServer) CreateMailbox(ctx context.Context, req *types.MsgCreateMailb
 
 	prefixedId := util.CreateHexAddress(types.ModuleName, int64(mailboxCount))
 
-	tree := types.NewTree(types.ZeroHashes, 0)
+	tree := util.NewTree(util.ZeroHashes, 0)
 
 	newMailbox := types.Mailbox{
 		Id:              prefixedId.String(),

@@ -4,38 +4,36 @@ import (
 	"crypto/ecdsa"
 	"fmt"
 
-	"github.com/bcp-innovations/hyperlane-cosmos/x/core/keeper"
+	"cosmossdk.io/math"
 
-	"cosmossdk.io/collections"
+	types2 "github.com/bcp-innovations/hyperlane-cosmos/x/core/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/ethereum/go-ethereum/crypto"
 
 	i "github.com/bcp-innovations/hyperlane-cosmos/tests/integration"
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
-	"github.com/bcp-innovations/hyperlane-cosmos/x/core/types"
-	"github.com/ethereum/go-ethereum/crypto"
+	"github.com/bcp-innovations/hyperlane-cosmos/x/core/_interchain_security/keeper"
+	"github.com/bcp-innovations/hyperlane-cosmos/x/core/_interchain_security/types"
+	keeper2 "github.com/bcp-innovations/hyperlane-cosmos/x/core/keeper"
+	"github.com/cosmos/gogoproto/proto"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )
 
 /*
 
-TEST CASES - msg_announce.go
+TEST CASES - msg_server.go
 
-* AnnounceValidator (invalid) with empty validator
-* AnnounceValidator (invalid) with invalid validator
-* AnnounceValidator (invalid) with empty storage location
-* AnnounceValidator (invalid) with empty signature
-* AnnounceValidator (invalid) with invalid signature
-* AnnounceValidator (invalid) with invalid signature recovery id
-* AnnounceValidator (invalid) same storage location for validator (replay protection)
-* AnnounceValidator (invalid) for non-existing Mailbox ID
-* AnnounceValidator (invalid) for invalid Mailbox ID
-* AnnounceValidator (invalid) for non-matching signature validator pair
-* AnnounceValidator (valid)
-* AnnounceValidator (valid) add another storage location
+* Create (valid) Noop ISM
+* Create (invalid) Multisig ISM with less addresses
+* Create (invalid) Multisig ISM with invalid threshold
+* Create (invalid) Multisig ISM with duplicate validator addresses
+* Create (invalid) Multisig ISM with invalid validator addresses
+* Create (valid) Multisig ISM
 
 */
 
-var _ = Describe("msg_announce.go", Ordered, func() {
+var _ = Describe("msg_server.go", Ordered, func() {
 	var s *i.KeeperTestSuite
 	var creator i.TestValidatorAddress
 
@@ -44,6 +42,131 @@ var _ = Describe("msg_announce.go", Ordered, func() {
 		creator = i.GenerateTestValidatorAddress("Creator")
 		err := s.MintBaseCoins(creator.Address, 1_000_000)
 		Expect(err).To(BeNil())
+	})
+
+	It("Create (valid) Noop ISM", func() {
+		// Arrange
+
+		// Act
+		res, err := s.RunTx(&types.MsgCreateNoopIsm{
+			Creator: creator.Address,
+		})
+
+		// Assert
+		Expect(err).To(BeNil())
+
+		var response types.MsgCreateNoopIsmResponse
+		err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
+		Expect(err).To(BeNil())
+		_, err = util.DecodeHexAddress(response.Id)
+		Expect(err).To(BeNil())
+
+		// ism, _ := s.App().HyperlaneKeeper.Isms.Get(s.Ctx(), ismId.Bytes())
+		// Expect(ism.Creator).To(Equal(creator.Address))
+		// Expect(ism.IsmType).To(Equal(types.INTERCHAIN_SECURITY_MODULE_TPYE_UNUSED))
+		// Expect(ism.Ism).To(BeAssignableToTypeOf(&types.NoopISM{}))
+	})
+
+	It("Create (invalid) Multisig ISM with less address", func() {
+		// Arrange
+
+		// Act
+		_, err := s.RunTx(&types.MsgCreateMerkleRootMultiSigIsm{
+			Creator:    creator.Address,
+			Validators: []string{},
+			Threshold:  2,
+		})
+
+		// Assert
+		Expect(err.Error()).To(Equal("validator addresses less than threshold"))
+	})
+
+	It("Create (invalid) Multisig ISM with invalid threshold", func() {
+		// Arrange
+
+		// Act
+		_, err := s.RunTx(&types.MsgCreateMerkleRootMultiSigIsm{
+			Creator:    creator.Address,
+			Validators: []string{},
+			Threshold:  0,
+		})
+
+		// Assert
+		Expect(err.Error()).To(Equal("threshold must be greater than zero"))
+	})
+
+	It("Create (invalid) Multisig ISM with duplicate validator addresses", func() {
+		// Arrange
+		invalidAddress := []string{
+			"0xb05b6a0aa112b61a7aa16c19cac27d970692995e",
+			"0xb05b6a0aa112b61a7aa16c19cac27d970692995e",
+		}
+
+		// Act
+		_, err := s.RunTx(&types.MsgCreateMerkleRootMultiSigIsm{
+			Validators: invalidAddress,
+			Threshold:  2,
+		})
+
+		// Assert
+		Expect(err.Error()).To(Equal(fmt.Sprintf("duplicate validator address: %v", invalidAddress[0])))
+	})
+
+	It("Create (invalid) Multisig ISM with invalid validator address", func() {
+		// Arrange
+		validValidatorAddress := "0xb05b6a0aa112b61a7aa16c19cac27d970692995e"
+		invalidAddress := []string{
+			// one character less
+			"0xb05b6a0aa112b61a7aa16c19cac27d970692995",
+			// one character more
+			"0xa05b6a0aa112b61a7aa16c19cac27d970692995ef",
+			// invalid character included (`t`)
+			"0xd05b6a0aa112b61a7aa16c19cac27d970692995t",
+		}
+
+		for _, invalidKey := range invalidAddress {
+			// Act
+			_, err := s.RunTx(&types.MsgCreateMerkleRootMultiSigIsm{
+				Creator: creator.Address,
+				Validators: []string{
+					validValidatorAddress,
+					invalidKey,
+				},
+				Threshold: 2,
+			})
+
+			// Assert
+			Expect(err.Error()).To(Equal(fmt.Sprintf("invalid validator address: %s", invalidKey)))
+		}
+	})
+
+	It("Create (valid) Multisig ISM", func() {
+		// Arrange
+
+		// Act
+		res, err := s.RunTx(&types.MsgCreateMerkleRootMultiSigIsm{
+			Creator: creator.Address,
+			Validators: []string{
+				"0xb05b6a0aa112b61a7aa16c19cac27d970692995e",
+				"0xa05b6a0aa112b61a7aa16c19cac27d970692995e",
+				"0xd05b6a0aa112b61a7aa16c19cac27d970692995e",
+			},
+			Threshold: 2,
+		})
+
+		// Assert
+		Expect(err).To(BeNil())
+
+		var response types.MsgCreateMerkleRootMultiSigIsmResponse
+		err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
+		Expect(err).To(BeNil())
+		// ismId, err := util.DecodeHexAddress(response.Id)
+		// Expect(err).To(BeNil())
+
+		// ism, err := keeper.NewQueryServerImpl(&s.App().IsmKeeper).Ism(s.Ctx(), &types.QueryIsmRequest{Id: ismId.String()})
+		// Expect(ism.Ism).To(BeAssignableToTypeOf(&types.MerkleRootMultiSigISM{}))
+		// Expect(ism).To(Equal(creator.Address))
+		// Expect(ism.IsmType).To(Equal(types.INTERCHAIN_SECURITY_MODULE_TPYE_MERKLE_ROOT_MULTISIG))
 	})
 
 	It("AnnounceValidator (invalid) with empty validator", func() {
@@ -69,7 +192,7 @@ var _ = Describe("msg_announce.go", Ordered, func() {
 
 		// Assert
 		Expect(err.Error()).To(Equal("validator cannot be empty"))
-		validateAnnouncement(s, "", []types.StorageLocation{})
+		validateAnnouncement(s, mailboxId.String(), "", []string{})
 	})
 
 	It("AnnounceValidator (invalid) with invalid validator", func() {
@@ -96,7 +219,7 @@ var _ = Describe("msg_announce.go", Ordered, func() {
 
 		// Assert
 		Expect(err.Error()).To(Equal("invalid validator address"))
-		validateAnnouncement(s, "", []types.StorageLocation{})
+		validateAnnouncement(s, mailboxId.String(), "", []string{})
 	})
 
 	It("AnnounceValidator (invalid) with empty storage location", func() {
@@ -123,7 +246,7 @@ var _ = Describe("msg_announce.go", Ordered, func() {
 
 		// Assert
 		Expect(err.Error()).To(Equal("storage location cannot be empty"))
-		validateAnnouncement(s, "", []types.StorageLocation{})
+		validateAnnouncement(s, mailboxId.String(), "", []string{})
 	})
 
 	It("AnnounceValidator (invalid) with empty signature", func() {
@@ -144,7 +267,7 @@ var _ = Describe("msg_announce.go", Ordered, func() {
 
 		// Assert
 		Expect(err.Error()).To(Equal("signature cannot be empty"))
-		validateAnnouncement(s, "", []types.StorageLocation{})
+		validateAnnouncement(s, mailboxId.String(), "", []string{})
 	})
 
 	It("AnnounceValidator (invalid) with invalid signature", func() {
@@ -165,7 +288,7 @@ var _ = Describe("msg_announce.go", Ordered, func() {
 
 		// Assert
 		Expect(err.Error()).To(Equal("invalid signature"))
-		validateAnnouncement(s, "", []types.StorageLocation{})
+		validateAnnouncement(s, mailboxId.String(), "", []string{})
 	})
 
 	It("AnnounceValidator (invalid) with invalid signature recovery id", func() {
@@ -192,7 +315,7 @@ var _ = Describe("msg_announce.go", Ordered, func() {
 
 		// Assert
 		Expect(err.Error()).To(Equal("invalid signature recovery id"))
-		validateAnnouncement(s, "", []types.StorageLocation{})
+		validateAnnouncement(s, mailboxId.String(), "", []string{})
 	})
 
 	It("AnnounceValidator (invalid) same storage location for validator (replay protection)", func() {
@@ -228,7 +351,7 @@ var _ = Describe("msg_announce.go", Ordered, func() {
 
 		// Assert
 		Expect(err.Error()).To(Equal(fmt.Sprintf("validator %s already announced storage location %s", validatorAddress, storageLocation)))
-		validateAnnouncement(s, validatorAddress, []types.StorageLocation{{Location: storageLocation, Id: 0}})
+		validateAnnouncement(s, mailboxId.String(), validatorAddress, []string{storageLocation})
 	})
 
 	It("AnnounceValidator (invalid) for non-existing Mailbox ID", func() {
@@ -256,7 +379,6 @@ var _ = Describe("msg_announce.go", Ordered, func() {
 
 		// Assert
 		Expect(err.Error()).To(Equal(fmt.Sprintf("failed to find mailbox with id: %s", nonExistingMailboxId.String())))
-		validateAnnouncement(s, "", []types.StorageLocation{})
 	})
 
 	It("AnnounceValidator (invalid) for invalid Mailbox ID", func() {
@@ -283,7 +405,7 @@ var _ = Describe("msg_announce.go", Ordered, func() {
 
 		// Assert
 		Expect(err.Error()).To(Equal("invalid mailbox id"))
-		validateAnnouncement(s, "", []types.StorageLocation{})
+		validateAnnouncement(s, mailboxId.String(), "", []string{})
 	})
 
 	It("AnnounceValidator (invalid) for non-matching signature validator pair", func() {
@@ -311,7 +433,7 @@ var _ = Describe("msg_announce.go", Ordered, func() {
 
 		// Assert
 		Expect(err.Error()).To(Equal(fmt.Sprintf("validator %s doesn't match signature. recovered address: %s", wrongValidatorAddress, correctValidatorAddress)))
-		validateAnnouncement(s, "", []types.StorageLocation{})
+		validateAnnouncement(s, mailboxId.String(), "", []string{})
 	})
 
 	It("AnnounceValidator (valid)", func() {
@@ -338,7 +460,9 @@ var _ = Describe("msg_announce.go", Ordered, func() {
 
 		// Assert
 		Expect(err).To(BeNil())
-		validateAnnouncement(s, validatorAddress, []types.StorageLocation{{Location: storageLocation, Id: 0}})
+		validateAnnouncement(s, mailboxId.String(), validatorAddress, []string{
+			storageLocation,
+		})
 	})
 
 	It("AnnounceValidator (valid) add another storage location", func() {
@@ -377,12 +501,140 @@ var _ = Describe("msg_announce.go", Ordered, func() {
 
 		// Assert
 		Expect(err).To(BeNil())
-		validateAnnouncement(s, validatorAddress, []types.StorageLocation{
-			{Location: storageLocation, Id: 0},
-			{Location: storageLocation2, Id: 1},
+		validateAnnouncement(s, mailboxId.String(), validatorAddress, []string{
+			storageLocation,
+			storageLocation2,
 		})
 	})
 })
+
+func createValidMailbox(s *i.KeeperTestSuite, creator string, ism string, igpRequired bool, destinationDomain uint32) (util.HexAddress, util.HexAddress, util.HexAddress) {
+	var ismId util.HexAddress
+	switch ism {
+	case "noop":
+		ismId = createNoopIsm(s, creator)
+	case "multisig":
+		ismId = createMultisigIsm(s, creator)
+	}
+
+	igpId := createIgp(s, creator)
+
+	err := setDestinationGasConfig(s, creator, igpId.String(), destinationDomain)
+	Expect(err).To(BeNil())
+
+	res, err := s.RunTx(&types2.MsgCreateMailbox{
+		Creator:    creator,
+		DefaultIsm: ismId.String(),
+		Igp: &types2.InterchainGasPaymaster{
+			Id:       igpId.String(),
+			Required: igpRequired,
+		},
+	})
+	Expect(err).To(BeNil())
+
+	return verifyNewMailbox(s, res, creator, igpId.String(), ismId.String(), igpRequired), igpId, ismId
+}
+
+func createIgp(s *i.KeeperTestSuite, creator string) util.HexAddress {
+	res, err := s.RunTx(&types2.MsgCreateIgp{
+		Owner: creator,
+		Denom: "acoin",
+	})
+	Expect(err).To(BeNil())
+
+	var response types2.MsgCreateIgpResponse
+	err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
+	Expect(err).To(BeNil())
+
+	igpId, err := util.DecodeHexAddress(response.Id)
+	Expect(err).To(BeNil())
+
+	return igpId
+}
+
+func createMultisigIsm(s *i.KeeperTestSuite, creator string) util.HexAddress {
+	res, err := s.RunTx(&types.MsgCreateMerkleRootMultiSigIsm{
+		Creator: creator,
+		Validators: []string{
+			"0xb05b6a0aa112b61a7aa16c19cac27d970692995e",
+			"0xa05b6a0aa112b61a7aa16c19cac27d970692995e",
+			"0xd05b6a0aa112b61a7aa16c19cac27d970692995e",
+		},
+		Threshold: 2,
+	})
+	Expect(err).To(BeNil())
+
+	var response types.MsgCreateMerkleRootMultiSigIsmResponse
+	err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
+	Expect(err).To(BeNil())
+
+	ismId, err := util.DecodeHexAddress(response.Id)
+	Expect(err).To(BeNil())
+
+	return ismId
+}
+
+func createNoopIsm(s *i.KeeperTestSuite, creator string) util.HexAddress {
+	res, err := s.RunTx(&types.MsgCreateNoopIsm{
+		Creator: creator,
+	})
+	Expect(err).To(BeNil())
+
+	var response types.MsgCreateNoopIsmResponse
+	err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
+	Expect(err).To(BeNil())
+
+	ismId, err := util.DecodeHexAddress(response.Id)
+	Expect(err).To(BeNil())
+
+	return ismId
+}
+
+func setDestinationGasConfig(s *i.KeeperTestSuite, creator string, igpId string, domain uint32) error {
+	_, err := s.RunTx(&types2.MsgSetDestinationGasConfig{
+		Owner: creator,
+		IgpId: igpId,
+		DestinationGasConfig: &types2.DestinationGasConfig{
+			RemoteDomain: 1,
+			GasOracle: &types2.GasOracle{
+				TokenExchangeRate: math.NewInt(1e10),
+				GasPrice:          math.NewInt(1),
+			},
+			GasOverhead: math.NewInt(200000),
+		},
+	})
+
+	return err
+}
+
+func verifyNewMailbox(s *i.KeeperTestSuite, res *sdk.Result, creator, igpId, ismId string, igpRequired bool) util.HexAddress {
+	var response types2.MsgCreateMailboxResponse
+	err := proto.Unmarshal(res.MsgResponses[0].Value, &response)
+	Expect(err).To(BeNil())
+	mailboxId, err := util.DecodeHexAddress(response.Id)
+	Expect(err).To(BeNil())
+
+	mailbox, err := s.App().HyperlaneKeeper.Mailboxes.Get(s.Ctx(), mailboxId.Bytes())
+	Expect(err).To(BeNil())
+	Expect(mailbox.Creator).To(Equal(creator))
+	Expect(mailbox.Igp.Id).To(Equal(igpId))
+	Expect(mailbox.DefaultIsm).To(Equal(ismId))
+	Expect(mailbox.MessageSent).To(Equal(uint32(0)))
+	Expect(mailbox.MessageReceived).To(Equal(uint32(0)))
+
+	if igpRequired {
+		Expect(mailbox.Igp.Required).To(BeTrue())
+	} else {
+		Expect(mailbox.Igp.Required).To(BeFalse())
+	}
+
+	mailboxes, err := keeper2.NewQueryServerImpl(s.App().HyperlaneKeeper).Mailboxes(s.Ctx(), &types2.QueryMailboxesRequest{})
+	Expect(err).To(BeNil())
+	Expect(mailboxes.Mailboxes).To(HaveLen(1))
+	Expect(mailboxes.Mailboxes[0].Creator).To(Equal(creator))
+
+	return mailboxId
+}
 
 func announce(privKey, storageLocation string, mailboxId util.HexAddress, localDomain uint32, skipRecoveryId bool) string {
 	announcementDigest := types.GetAnnouncementDigest(storageLocation, localDomain, mailboxId.Bytes())
@@ -408,41 +660,20 @@ func announce(privKey, storageLocation string, mailboxId util.HexAddress, localD
 	return util.EncodeEthHex(signedAnnouncement)
 }
 
-func validateAnnouncement(s *i.KeeperTestSuite, validatorAddress string, storageLocations []types.StorageLocation) {
+func validateAnnouncement(s *i.KeeperTestSuite, mailboxId, validatorAddress string, storageLocations []string) {
 	if validatorAddress == "" {
-		it, err := s.App().HyperlaneKeeper.Validators.Iterate(s.Ctx(), nil)
+		announcedStorageLocations, err := keeper.NewQueryServerImpl(&s.App().HyperlaneKeeper.IsmKeeper).AnnouncedStorageLocations(s.Ctx(), &types.QueryAnnouncedStorageLocationsRequest{MailboxId: mailboxId, ValidatorAddress: validatorAddress})
 		Expect(err).To(BeNil())
 
-		validators, err := it.Values()
-		Expect(err).To(BeNil())
-		Expect(validators).To(HaveLen(0))
-
-		rng := collections.NewPrefixedPairRange[[]byte, uint64](nil)
-
-		iter, err := s.App().HyperlaneKeeper.StorageLocations.Iterate(s.Ctx(), rng)
-		Expect(err).To(BeNil())
-
-		announcedStorageLocations, err := iter.Values()
-		Expect(err).To(BeNil())
-		Expect(announcedStorageLocations).To(HaveLen(0))
+		Expect(announcedStorageLocations.StorageLocations).To(HaveLen(0))
 	} else {
-		validatorAddressBytes, err := util.DecodeEthHex(validatorAddress)
+		announcedStorageLocations, err := keeper.NewQueryServerImpl(&s.App().HyperlaneKeeper.IsmKeeper).AnnouncedStorageLocations(s.Ctx(), &types.QueryAnnouncedStorageLocationsRequest{MailboxId: mailboxId, ValidatorAddress: validatorAddress})
 		Expect(err).To(BeNil())
 
-		_, err = s.App().HyperlaneKeeper.Validators.Get(s.Ctx(), validatorAddressBytes)
-		Expect(err).To(BeNil())
+		Expect(announcedStorageLocations.StorageLocations).To(Equal(storageLocations))
 
-		rng := collections.NewPrefixedPairRange[[]byte, uint64](validatorAddressBytes)
-
-		iter, err := s.App().HyperlaneKeeper.StorageLocations.Iterate(s.Ctx(), rng)
+		latestAnnouncedStorageLocation, err := keeper.NewQueryServerImpl(&s.App().HyperlaneKeeper.IsmKeeper).LatestAnnouncedStorageLocation(s.Ctx(), &types.QueryLatestAnnouncedStorageLocationRequest{MailboxId: mailboxId, ValidatorAddress: validatorAddress})
 		Expect(err).To(BeNil())
-
-		announcedStorageLocations, err := iter.Values()
-		Expect(err).To(BeNil())
-		Expect(storageLocations).To(Equal(announcedStorageLocations))
-
-		latestAnnouncedStorageLocation, err := keeper.NewQueryServerImpl(s.App().HyperlaneKeeper).LatestAnnouncedStorageLocation(s.Ctx(), &types.QueryLatestAnnouncedStorageLocationRequest{ValidatorAddress: validatorAddress})
-		Expect(err).To(BeNil())
-		Expect(latestAnnouncedStorageLocation.StorageLocation).To(Equal(storageLocations[len(storageLocations)-1].Location))
+		Expect(latestAnnouncedStorageLocation.StorageLocation).To(Equal(storageLocations[len(storageLocations)-1]))
 	}
 }

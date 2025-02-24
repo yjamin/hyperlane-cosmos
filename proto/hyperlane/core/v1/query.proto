@@ -53,25 +53,6 @@ service Query {
     option (google.api.http).get = "/hyperlane/v1/recipient_ism/{recipient}";
   }
 
-  // Validators ...
-  rpc Validators(QueryValidatorsRequest) returns (QueryValidatorsResponse) {
-    option (google.api.http).get = "/hyperlane/v1/validators";
-  }
-
-  // AnnouncedStorageLocations ...
-  rpc AnnouncedStorageLocations(QueryAnnouncedStorageLocationsRequest)
-      returns (QueryAnnouncedStorageLocationsResponse) {
-    option (google.api.http).get =
-        "/hyperlane/v1/announced_storage_locations/{validator_address}";
-  }
-
-  // LatestAnnouncedStorageLocation ...
-  rpc LatestAnnouncedStorageLocation(QueryLatestAnnouncedStorageLocationRequest)
-      returns (QueryLatestAnnouncedStorageLocationResponse) {
-    option (google.api.http).get =
-        "/hyperlane/v1/announced_storage_locations/{validator_address}/latest";
-  }
-
   // Igps ...
   rpc Igps(QueryIgpsRequest) returns (QueryIgpsResponse) {
     option (google.api.http).get = "/hyperlane/v1/igps";
@@ -157,39 +138,6 @@ message RecipientIsmRequest { string recipient = 1; }
 
 // RecipientIsmResponse ...
 message RecipientIsmResponse { string ism_id = 1; }
-
-// QueryValidatorsRequest ...
-message QueryValidatorsRequest {
-  // pagination defines an optional pagination for the request.
-  cosmos.base.query.v1beta1.PageRequest pagination = 1;
-}
-
-// QueryValidatorsResponse ...
-message QueryValidatorsResponse {
-  repeated Validator validators = 1
-      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
-
-  // pagination defines the pagination in the response.
-  cosmos.base.query.v1beta1.PageResponse pagination = 2;
-}
-
-// QueryAnnouncedStorageLocationsRequest ...
-message QueryAnnouncedStorageLocationsRequest { string validator_address = 1; }
-
-// QueryAnnouncedStorageLocationsResponse ...
-message QueryAnnouncedStorageLocationsResponse {
-  repeated StorageLocation storage_locations = 1;
-}
-
-// QueryAnnouncedStorageLocationsRequest ...
-message QueryLatestAnnouncedStorageLocationRequest {
-  string validator_address = 1;
-}
-
-// QueryAnnouncedStorageLocationsResponse ...
-message QueryLatestAnnouncedStorageLocationResponse {
-  string storage_location = 1;
-}
 
 // QueryIgpsRequest ...
 message QueryIgpsRequest {
