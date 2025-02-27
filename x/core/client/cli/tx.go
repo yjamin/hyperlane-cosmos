@@ -13,10 +13,15 @@ import (
 )
 
 var (
-	gasLimit    string
-	igpId       string
-	igpOptional bool
-	maxFee      string
+	gasLimit string
+	igpId    string
+	maxFee   string
+
+	// SetMailbox
+	defaultIsm   string
+	defaultHook  string
+	requiredHook string
+	newOwner     string
 )
 
 func GetTxCmd() *cobra.Command {
@@ -29,7 +34,6 @@ func GetTxCmd() *cobra.Command {
 	}
 
 	txCmd.AddCommand(
-		NewIgpCmd(),
 		NewMailboxCmd(),
 		ism.GetTxCmd(),
 		pdmodule.GetTxCmd(),

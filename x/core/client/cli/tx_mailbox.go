@@ -26,6 +26,7 @@ func NewMailboxCmd() *cobra.Command {
 		CmdCreateMailbox(),
 		CmdDispatchMessage(),
 		CmdProcessMessage(),
+		CmdSetMailbox(),
 	)
 
 	return cmd
@@ -33,9 +34,9 @@ func NewMailboxCmd() *cobra.Command {
 
 func CmdCreateMailbox() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create-mailbox [default-ism-id] [igp-id]",
+		Use:   "create-mailbox [default-ism-id]",
 		Short: "Create a Hyperlane Mailbox",
-		Args:  cobra.ExactArgs(2),
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -43,24 +44,18 @@ func CmdCreateMailbox() *cobra.Command {
 			}
 
 			msg := types.MsgCreateMailbox{
-				Creator:    clientCtx.GetFromAddress().String(),
+				Owner:      clientCtx.GetFromAddress().String(),
 				DefaultIsm: args[0],
-				Igp: &types.InterchainGasPaymaster{
-					Id:       args[1],
-					Required: !igpOptional,
-				},
 			}
 
-			_, err = sdk.AccAddressFromBech32(msg.Creator)
+			_, err = sdk.AccAddressFromBech32(msg.Owner)
 			if err != nil {
-				panic(fmt.Errorf("invalid creator address (%s)", msg.Creator))
+				panic(fmt.Errorf("invalid owner address (%s)", msg.Owner))
 			}
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
 		},
 	}
-
-	cmd.Flags().BoolVar(&igpOptional, "igp-optional", false, "set InterchainGasPaymaster as not required")
 
 	flags.AddTxFlagsToCmd(cmd)
 
@@ -93,9 +88,9 @@ func CmdDispatchMessage() *cobra.Command {
 				return errors.New("failed to convert `gasLimit` into math.Int")
 			}
 
-			maxFeeInt, ok := math.NewIntFromString(maxFee)
-			if !ok {
-				return errors.New("failed to convert `maxFee` into math.Int")
+			maxFeeCoin, err := sdk.ParseCoinNormalized(maxFee)
+			if err != nil {
+				return err
 			}
 
 			msg := types.MsgDispatchMessage{
@@ -104,9 +99,9 @@ func CmdDispatchMessage() *cobra.Command {
 				Destination: uint32(destinationDomain),
 				Recipient:   recipient,
 				Body:        messageBody,
-				IgpId:       igpId,
+				CustomIgp:   igpId,
 				GasLimit:    gasLimitInt,
-				MaxFee:      maxFeeInt,
+				MaxFee:      maxFeeCoin,
 			}
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
@@ -130,7 +125,7 @@ func CmdDispatchMessage() *cobra.Command {
 
 func CmdProcessMessage() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "process [mailboxId] [metadata] [message]",
+		Use:   "process [mailbox-id] [metadata] [message]",
 		Short: "Process a Hyperlane message",
 		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
@@ -153,6 +148,45 @@ func CmdProcessMessage() *cobra.Command {
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
 		},
 	}
+
+	flags.AddTxFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func CmdSetMailbox() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "set-mailbox [mailbox-id]",
+		Short: "Update a Hyperlane Mailbox",
+		Args:  cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) (err error) {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			msg := types.MsgSetMailbox{
+				Owner:        clientCtx.GetFromAddress().String(),
+				MailboxId:    args[0],
+				DefaultIsm:   defaultIsm,
+				DefaultHook:  defaultHook,
+				RequiredHook: requiredHook,
+				NewOwner:     newOwner,
+			}
+
+			_, err = sdk.AccAddressFromBech32(msg.Owner)
+			if err != nil {
+				panic(fmt.Errorf("invalid owner address (%s)", msg.Owner))
+			}
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
+		},
+	}
+
+	cmd.Flags().StringVar(&defaultIsm, "default-ism", "", "set updated defaultIsm")
+	cmd.Flags().StringVar(&defaultHook, "default-hook", "", "set updated defaultHook")
+	cmd.Flags().StringVar(&requiredHook, "required-hook", "", "set updated requiredHook")
+	cmd.Flags().StringVar(&newOwner, "new-owner", "", "set updated owner")
 
 	flags.AddTxFlagsToCmd(cmd)
 

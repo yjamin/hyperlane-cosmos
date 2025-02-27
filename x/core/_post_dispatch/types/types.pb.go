@@ -28,13 +28,15 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 // InterchainGasPaymaster ...
 type InterchainGasPaymaster struct {
 	// id ...
-	Id uint64 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	InternalId uint64 `protobuf:"varint,1,opt,name=internal_id,json=internalId,proto3" json:"internal_id,omitempty"`
+	// id is the hyperlane hex address
+	Id string `protobuf:"bytes,2,opt,name=id,proto3" json:"id,omitempty"`
 	// owner ...
-	Owner string `protobuf:"bytes,2,opt,name=owner,proto3" json:"owner,omitempty"`
+	Owner string `protobuf:"bytes,3,opt,name=owner,proto3" json:"owner,omitempty"`
 	// denom ...
-	Denom string `protobuf:"bytes,3,opt,name=denom,proto3" json:"denom,omitempty"`
+	Denom string `protobuf:"bytes,4,opt,name=denom,proto3" json:"denom,omitempty"`
 	// claimable_fees ...
-	ClaimableFees cosmossdk_io_math.Int `protobuf:"bytes,4,opt,name=claimable_fees,json=claimableFees,proto3,customtype=cosmossdk.io/math.Int" json:"claimable_fees"`
+	ClaimableFees cosmossdk_io_math.Int `protobuf:"bytes,5,opt,name=claimable_fees,json=claimableFees,proto3,customtype=cosmossdk.io/math.Int" json:"claimable_fees"`
 }
 
 func (m *InterchainGasPaymaster) Reset()         { *m = InterchainGasPaymaster{} }
@@ -70,11 +72,18 @@ func (m *InterchainGasPaymaster) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_InterchainGasPaymaster proto.InternalMessageInfo
 
-func (m *InterchainGasPaymaster) GetId() uint64 {
+func (m *InterchainGasPaymaster) GetInternalId() uint64 {
+	if m != nil {
+		return m.InternalId
+	}
+	return 0
+}
+
+func (m *InterchainGasPaymaster) GetId() string {
 	if m != nil {
 		return m.Id
 	}
-	return 0
+	return ""
 }
 
 func (m *InterchainGasPaymaster) GetOwner() string {
@@ -91,8 +100,239 @@ func (m *InterchainGasPaymaster) GetDenom() string {
 	return ""
 }
 
+// DestinationGasConfig ...
+type DestinationGasConfig struct {
+	// remote_domain ...
+	RemoteDomain uint32 `protobuf:"varint,1,opt,name=remote_domain,json=remoteDomain,proto3" json:"remote_domain,omitempty"`
+	// gas_oracle ...
+	GasOracle *GasOracle `protobuf:"bytes,2,opt,name=gas_oracle,json=gasOracle,proto3" json:"gas_oracle,omitempty"`
+	// gas_overhead ...
+	GasOverhead cosmossdk_io_math.Int `protobuf:"bytes,3,opt,name=gas_overhead,json=gasOverhead,proto3,customtype=cosmossdk.io/math.Int" json:"gas_overhead"`
+}
+
+func (m *DestinationGasConfig) Reset()         { *m = DestinationGasConfig{} }
+func (m *DestinationGasConfig) String() string { return proto.CompactTextString(m) }
+func (*DestinationGasConfig) ProtoMessage()    {}
+func (*DestinationGasConfig) Descriptor() ([]byte, []int) {
+	return fileDescriptor_d8f5bab7d9705187, []int{1}
+}
+func (m *DestinationGasConfig) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *DestinationGasConfig) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_DestinationGasConfig.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *DestinationGasConfig) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_DestinationGasConfig.Merge(m, src)
+}
+func (m *DestinationGasConfig) XXX_Size() int {
+	return m.Size()
+}
+func (m *DestinationGasConfig) XXX_DiscardUnknown() {
+	xxx_messageInfo_DestinationGasConfig.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_DestinationGasConfig proto.InternalMessageInfo
+
+func (m *DestinationGasConfig) GetRemoteDomain() uint32 {
+	if m != nil {
+		return m.RemoteDomain
+	}
+	return 0
+}
+
+func (m *DestinationGasConfig) GetGasOracle() *GasOracle {
+	if m != nil {
+		return m.GasOracle
+	}
+	return nil
+}
+
+// GasOracle ...
+type GasOracle struct {
+	// token_exchange_rate ...
+	TokenExchangeRate cosmossdk_io_math.Int `protobuf:"bytes,1,opt,name=token_exchange_rate,json=tokenExchangeRate,proto3,customtype=cosmossdk.io/math.Int" json:"token_exchange_rate"`
+	// gas_price ...
+	GasPrice cosmossdk_io_math.Int `protobuf:"bytes,2,opt,name=gas_price,json=gasPrice,proto3,customtype=cosmossdk.io/math.Int" json:"gas_price"`
+}
+
+func (m *GasOracle) Reset()         { *m = GasOracle{} }
+func (m *GasOracle) String() string { return proto.CompactTextString(m) }
+func (*GasOracle) ProtoMessage()    {}
+func (*GasOracle) Descriptor() ([]byte, []int) {
+	return fileDescriptor_d8f5bab7d9705187, []int{2}
+}
+func (m *GasOracle) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *GasOracle) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_GasOracle.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *GasOracle) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GasOracle.Merge(m, src)
+}
+func (m *GasOracle) XXX_Size() int {
+	return m.Size()
+}
+func (m *GasOracle) XXX_DiscardUnknown() {
+	xxx_messageInfo_GasOracle.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GasOracle proto.InternalMessageInfo
+
+// MerkleTreeHook ...
+type MerkleTreeHook struct {
+	// id ...
+	InternalId uint64 `protobuf:"varint,1,opt,name=internal_id,json=internalId,proto3" json:"internal_id,omitempty"`
+	// id is the hyperlane hex address
+	Id string `protobuf:"bytes,2,opt,name=id,proto3" json:"id,omitempty"`
+	// owner ...
+	Owner string `protobuf:"bytes,3,opt,name=owner,proto3" json:"owner,omitempty"`
+	// tree ...
+	Tree *Tree `protobuf:"bytes,4,opt,name=tree,proto3" json:"tree,omitempty"`
+}
+
+func (m *MerkleTreeHook) Reset()         { *m = MerkleTreeHook{} }
+func (m *MerkleTreeHook) String() string { return proto.CompactTextString(m) }
+func (*MerkleTreeHook) ProtoMessage()    {}
+func (*MerkleTreeHook) Descriptor() ([]byte, []int) {
+	return fileDescriptor_d8f5bab7d9705187, []int{3}
+}
+func (m *MerkleTreeHook) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MerkleTreeHook) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MerkleTreeHook.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MerkleTreeHook) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MerkleTreeHook.Merge(m, src)
+}
+func (m *MerkleTreeHook) XXX_Size() int {
+	return m.Size()
+}
+func (m *MerkleTreeHook) XXX_DiscardUnknown() {
+	xxx_messageInfo_MerkleTreeHook.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MerkleTreeHook proto.InternalMessageInfo
+
+func (m *MerkleTreeHook) GetInternalId() uint64 {
+	if m != nil {
+		return m.InternalId
+	}
+	return 0
+}
+
+func (m *MerkleTreeHook) GetId() string {
+	if m != nil {
+		return m.Id
+	}
+	return ""
+}
+
+func (m *MerkleTreeHook) GetOwner() string {
+	if m != nil {
+		return m.Owner
+	}
+	return ""
+}
+
+func (m *MerkleTreeHook) GetTree() *Tree {
+	if m != nil {
+		return m.Tree
+	}
+	return nil
+}
+
+// Tree represents an incremental merkle tree.
+// Contains current branch and the number of inserted leaves in the tree.
+type Tree struct {
+	// branch ...
+	Branch [][]byte `protobuf:"bytes,1,rep,name=branch,proto3" json:"branch,omitempty"`
+	// count ...
+	Count uint32 `protobuf:"varint,2,opt,name=count,proto3" json:"count,omitempty"`
+}
+
+func (m *Tree) Reset()         { *m = Tree{} }
+func (m *Tree) String() string { return proto.CompactTextString(m) }
+func (*Tree) ProtoMessage()    {}
+func (*Tree) Descriptor() ([]byte, []int) {
+	return fileDescriptor_d8f5bab7d9705187, []int{4}
+}
+func (m *Tree) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *Tree) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_Tree.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *Tree) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Tree.Merge(m, src)
+}
+func (m *Tree) XXX_Size() int {
+	return m.Size()
+}
+func (m *Tree) XXX_DiscardUnknown() {
+	xxx_messageInfo_Tree.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Tree proto.InternalMessageInfo
+
+func (m *Tree) GetBranch() [][]byte {
+	if m != nil {
+		return m.Branch
+	}
+	return nil
+}
+
+func (m *Tree) GetCount() uint32 {
+	if m != nil {
+		return m.Count
+	}
+	return 0
+}
+
 func init() {
 	proto.RegisterType((*InterchainGasPaymaster)(nil), "hyperlane.core.post_dispatch.v1.InterchainGasPaymaster")
+	proto.RegisterType((*DestinationGasConfig)(nil), "hyperlane.core.post_dispatch.v1.DestinationGasConfig")
+	proto.RegisterType((*GasOracle)(nil), "hyperlane.core.post_dispatch.v1.GasOracle")
+	proto.RegisterType((*MerkleTreeHook)(nil), "hyperlane.core.post_dispatch.v1.MerkleTreeHook")
+	proto.RegisterType((*Tree)(nil), "hyperlane.core.post_dispatch.v1.Tree")
 }
 
 func init() {
@@ -100,28 +340,43 @@ func init() {
 }
 
 var fileDescriptor_d8f5bab7d9705187 = []byte{
-	// 325 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x54, 0x90, 0xc1, 0x4a, 0xf3, 0x40,
-	0x10, 0xc7, 0x93, 0x7e, 0xed, 0x07, 0x06, 0xec, 0x21, 0x54, 0x89, 0x05, 0xd3, 0xe2, 0xa9, 0x20,
-	0xdd, 0xa5, 0xf8, 0x04, 0x16, 0xb1, 0xf4, 0x26, 0xf1, 0xe6, 0x25, 0x6c, 0x76, 0xc7, 0x64, 0xb1,
-	0xd9, 0x09, 0xbb, 0x6b, 0xb5, 0x6f, 0xe1, 0xc3, 0xf4, 0x21, 0x7a, 0x2c, 0x9e, 0xc4, 0x43, 0x91,
-	0xf6, 0x45, 0xa4, 0x59, 0x29, 0xf4, 0x36, 0x33, 0xfc, 0xe6, 0xff, 0x87, 0x5f, 0x70, 0x5d, 0x2c,
-	0x2a, 0xd0, 0x33, 0xa6, 0x80, 0x72, 0xd4, 0x40, 0x2b, 0x34, 0x36, 0x15, 0xd2, 0x54, 0xcc, 0xf2,
-	0x82, 0xce, 0x47, 0xd4, 0x2e, 0x2a, 0x30, 0xa4, 0xd2, 0x68, 0x31, 0xec, 0x1d, 0x60, 0xb2, 0x87,
-	0xc9, 0x11, 0x4c, 0xe6, 0xa3, 0xee, 0x05, 0x47, 0x53, 0xa2, 0x49, 0x6b, 0x9c, 0xba, 0xc5, 0xfd,
-	0x76, 0x3b, 0x39, 0xe6, 0xe8, 0xee, 0xfb, 0xc9, 0x5d, 0xaf, 0x96, 0x7e, 0x70, 0x3e, 0x55, 0x16,
-	0x34, 0x2f, 0x98, 0x54, 0x13, 0x66, 0x1e, 0xd8, 0xa2, 0x64, 0xc6, 0x82, 0x0e, 0xdb, 0x41, 0x43,
-	0x8a, 0xc8, 0xef, 0xfb, 0x83, 0x66, 0xd2, 0x90, 0x22, 0x24, 0x41, 0x0b, 0xdf, 0x14, 0xe8, 0xa8,
-	0xd1, 0xf7, 0x07, 0x27, 0xe3, 0xe8, 0x73, 0x39, 0xec, 0xfc, 0x35, 0xdc, 0x0a, 0xa1, 0xc1, 0x98,
-	0x47, 0xab, 0xa5, 0xca, 0x13, 0x87, 0x85, 0x9d, 0xa0, 0x25, 0x40, 0x61, 0x19, 0xfd, 0xdb, 0xf3,
-	0x89, 0x5b, 0xc2, 0xbb, 0xa0, 0xcd, 0x67, 0x4c, 0x96, 0x2c, 0x9b, 0x41, 0xfa, 0x0c, 0x60, 0xa2,
-	0x66, 0x1d, 0x77, 0xb9, 0xda, 0xf4, 0xbc, 0xef, 0x4d, 0xef, 0xcc, 0x45, 0x1a, 0xf1, 0x42, 0x24,
-	0xd2, 0x92, 0xd9, 0x82, 0x4c, 0x95, 0x4d, 0x4e, 0x0f, 0x4f, 0xf7, 0x00, 0x66, 0xcc, 0x56, 0xdb,
-	0xd8, 0x5f, 0x6f, 0x63, 0xff, 0x67, 0x1b, 0xfb, 0x1f, 0xbb, 0xd8, 0x5b, 0xef, 0x62, 0xef, 0x6b,
-	0x17, 0x7b, 0x4f, 0x93, 0x5c, 0xda, 0xe2, 0x35, 0x23, 0x1c, 0x4b, 0x9a, 0xf1, 0x6a, 0x28, 0x95,
-	0xc2, 0x39, 0xb3, 0x12, 0x95, 0xa1, 0x07, 0x7b, 0x43, 0x57, 0x42, 0xdf, 0x9d, 0xf3, 0xf4, 0x58,
-	0x7a, 0x6d, 0x3c, 0xfb, 0x5f, 0x0b, 0xba, 0xf9, 0x0d, 0x00, 0x00, 0xff, 0xff, 0x4d, 0x42, 0x9c,
-	0x58, 0xa1, 0x01, 0x00, 0x00,
+	// 561 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x53, 0x4d, 0x6f, 0xd3, 0x40,
+	0x10, 0x8d, 0xdb, 0xb4, 0x22, 0x9b, 0x0f, 0x89, 0x25, 0x54, 0xa6, 0x12, 0x4e, 0x14, 0x84, 0x14,
+	0x81, 0x62, 0xab, 0x85, 0x0b, 0x9c, 0xa0, 0x04, 0x42, 0x0e, 0x15, 0x95, 0xe1, 0xc4, 0xc5, 0xda,
+	0xac, 0xa7, 0xf6, 0x2a, 0xf6, 0xae, 0xb5, 0xbb, 0x0d, 0xcd, 0xbf, 0xe0, 0xc4, 0xaf, 0xe0, 0xc8,
+	0x8f, 0xc8, 0xb1, 0x42, 0x42, 0x42, 0x1c, 0x2a, 0x94, 0xfc, 0x11, 0xe4, 0xdd, 0x34, 0x52, 0x4f,
+	0x39, 0x71, 0xdb, 0x79, 0x7e, 0xef, 0x69, 0xde, 0x78, 0x06, 0x3d, 0x4d, 0xe7, 0x05, 0xc8, 0x8c,
+	0x70, 0x08, 0xa8, 0x90, 0x10, 0x14, 0x42, 0xe9, 0x28, 0x66, 0xaa, 0x20, 0x9a, 0xa6, 0xc1, 0xec,
+	0x28, 0xd0, 0xf3, 0x02, 0x94, 0x5f, 0x48, 0xa1, 0x05, 0xee, 0x6c, 0xc8, 0x7e, 0x49, 0xf6, 0x6f,
+	0x91, 0xfd, 0xd9, 0xd1, 0xe1, 0x03, 0x2a, 0x54, 0x2e, 0x54, 0x64, 0xe8, 0x81, 0x2d, 0xac, 0xf6,
+	0xb0, 0x9d, 0x88, 0x44, 0x58, 0xbc, 0x7c, 0x59, 0xb4, 0xf7, 0xcb, 0x41, 0x07, 0x63, 0xae, 0x41,
+	0xd2, 0x94, 0x30, 0x3e, 0x22, 0xea, 0x8c, 0xcc, 0x73, 0xa2, 0x34, 0x48, 0xdc, 0x41, 0x75, 0x56,
+	0x7e, 0xe1, 0x24, 0x8b, 0x58, 0xec, 0x3a, 0x5d, 0xa7, 0x5f, 0x0d, 0xd1, 0x0d, 0x34, 0x8e, 0x71,
+	0x0b, 0xed, 0xb0, 0xd8, 0xdd, 0xe9, 0x3a, 0xfd, 0x5a, 0xb8, 0xc3, 0x62, 0xec, 0xa3, 0x3d, 0xf1,
+	0x85, 0x83, 0x74, 0x77, 0x4b, 0xe8, 0xc4, 0xfd, 0xf9, 0x63, 0xd0, 0x5e, 0xb7, 0xf0, 0x3a, 0x8e,
+	0x25, 0x28, 0xf5, 0x51, 0x4b, 0xc6, 0x93, 0xd0, 0xd2, 0x70, 0x1b, 0xed, 0xc5, 0xc0, 0x45, 0xee,
+	0x56, 0x8d, 0x85, 0x2d, 0xf0, 0x10, 0xb5, 0x68, 0x46, 0x58, 0x4e, 0x26, 0x19, 0x44, 0xe7, 0x00,
+	0xca, 0xdd, 0x33, 0x76, 0x0f, 0x17, 0xd7, 0x9d, 0xca, 0x9f, 0xeb, 0xce, 0x7d, 0x6b, 0xa9, 0xe2,
+	0xa9, 0xcf, 0x44, 0x90, 0x13, 0x9d, 0xfa, 0x63, 0xae, 0xc3, 0xe6, 0x46, 0xf4, 0x0e, 0x40, 0xf5,
+	0x16, 0x0e, 0x6a, 0x0f, 0x41, 0x69, 0xc6, 0x89, 0x66, 0xa2, 0x0c, 0xf6, 0x46, 0xf0, 0x73, 0x96,
+	0xe0, 0x47, 0xa8, 0x29, 0x21, 0x17, 0x1a, 0xa2, 0x58, 0xe4, 0x84, 0x71, 0x93, 0xab, 0x19, 0x36,
+	0x2c, 0x38, 0x34, 0x18, 0x1e, 0x23, 0x94, 0x10, 0x15, 0x09, 0x49, 0x68, 0x06, 0x26, 0x61, 0xfd,
+	0xf8, 0x89, 0xbf, 0x65, 0xf8, 0xfe, 0x88, 0xa8, 0x0f, 0x46, 0x11, 0xd6, 0x92, 0x9b, 0x27, 0x7e,
+	0x85, 0x1a, 0xc6, 0x6a, 0x06, 0x32, 0x05, 0x12, 0xaf, 0x67, 0xb3, 0x25, 0x4c, 0xbd, 0xd4, 0xaf,
+	0x15, 0xbd, 0x6f, 0x0e, 0xaa, 0x6d, 0xac, 0xf1, 0x29, 0xba, 0xa7, 0xc5, 0x14, 0x78, 0x04, 0x97,
+	0x34, 0x25, 0x3c, 0x81, 0x48, 0x12, 0x0d, 0x26, 0xc5, 0x56, 0xdb, 0xbb, 0x46, 0xf9, 0x76, 0x2d,
+	0x0c, 0x89, 0x06, 0xfc, 0x12, 0x95, 0xbd, 0x46, 0x85, 0x64, 0xd4, 0x06, 0xdd, 0x6a, 0x72, 0x27,
+	0x21, 0xea, 0xac, 0xa4, 0xf7, 0xbe, 0x3b, 0xa8, 0x75, 0x0a, 0x72, 0x9a, 0xc1, 0x27, 0x09, 0xf0,
+	0x5e, 0x88, 0xe9, 0xff, 0xdf, 0x99, 0x17, 0xa8, 0xaa, 0x25, 0x80, 0x59, 0x99, 0xfa, 0xf1, 0xe3,
+	0xad, 0xff, 0xa4, 0xec, 0x2c, 0x34, 0x92, 0xde, 0x73, 0x54, 0x2d, 0x2b, 0x7c, 0x80, 0xf6, 0x27,
+	0x92, 0x70, 0x9a, 0xba, 0x4e, 0x77, 0xb7, 0xdf, 0x08, 0xd7, 0x55, 0xb9, 0x8e, 0x54, 0x5c, 0x70,
+	0x6d, 0xba, 0x6b, 0x86, 0xb6, 0x38, 0x21, 0x8b, 0xa5, 0xe7, 0x5c, 0x2d, 0x3d, 0xe7, 0xef, 0xd2,
+	0x73, 0xbe, 0xae, 0xbc, 0xca, 0xd5, 0xca, 0xab, 0xfc, 0x5e, 0x79, 0x95, 0xcf, 0xa3, 0x84, 0xe9,
+	0xf4, 0x62, 0xe2, 0x53, 0x91, 0x07, 0x13, 0x5a, 0x0c, 0x18, 0xe7, 0x62, 0x66, 0xb6, 0x4d, 0x05,
+	0x9b, 0xb6, 0x06, 0x36, 0x4c, 0x70, 0x69, 0xaf, 0x3b, 0xba, 0x7d, 0xde, 0xe6, 0xb6, 0x27, 0xfb,
+	0xe6, 0x14, 0x9f, 0xfd, 0x0b, 0x00, 0x00, 0xff, 0xff, 0xaf, 0x82, 0x00, 0x69, 0x0b, 0x04, 0x00,
+	0x00,
 }
 
 func (m *InterchainGasPaymaster) Marshal() (dAtA []byte, err error) {
@@ -153,25 +408,216 @@ func (m *InterchainGasPaymaster) MarshalToSizedBuffer(dAtA []byte) (int, error) 
 		i = encodeVarintTypes(dAtA, i, uint64(size))
 	}
 	i--
-	dAtA[i] = 0x22
+	dAtA[i] = 0x2a
 	if len(m.Denom) > 0 {
 		i -= len(m.Denom)
 		copy(dAtA[i:], m.Denom)
 		i = encodeVarintTypes(dAtA, i, uint64(len(m.Denom)))
 		i--
-		dAtA[i] = 0x1a
+		dAtA[i] = 0x22
 	}
 	if len(m.Owner) > 0 {
 		i -= len(m.Owner)
 		copy(dAtA[i:], m.Owner)
 		i = encodeVarintTypes(dAtA, i, uint64(len(m.Owner)))
 		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Id) > 0 {
+		i -= len(m.Id)
+		copy(dAtA[i:], m.Id)
+		i = encodeVarintTypes(dAtA, i, uint64(len(m.Id)))
+		i--
 		dAtA[i] = 0x12
 	}
-	if m.Id != 0 {
-		i = encodeVarintTypes(dAtA, i, uint64(m.Id))
+	if m.InternalId != 0 {
+		i = encodeVarintTypes(dAtA, i, uint64(m.InternalId))
 		i--
 		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *DestinationGasConfig) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *DestinationGasConfig) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *DestinationGasConfig) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	{
+		size := m.GasOverhead.Size()
+		i -= size
+		if _, err := m.GasOverhead.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintTypes(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x1a
+	if m.GasOracle != nil {
+		{
+			size, err := m.GasOracle.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintTypes(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.RemoteDomain != 0 {
+		i = encodeVarintTypes(dAtA, i, uint64(m.RemoteDomain))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *GasOracle) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *GasOracle) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GasOracle) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	{
+		size := m.GasPrice.Size()
+		i -= size
+		if _, err := m.GasPrice.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintTypes(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x12
+	{
+		size := m.TokenExchangeRate.Size()
+		i -= size
+		if _, err := m.TokenExchangeRate.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintTypes(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0xa
+	return len(dAtA) - i, nil
+}
+
+func (m *MerkleTreeHook) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MerkleTreeHook) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MerkleTreeHook) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Tree != nil {
+		{
+			size, err := m.Tree.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintTypes(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.Owner) > 0 {
+		i -= len(m.Owner)
+		copy(dAtA[i:], m.Owner)
+		i = encodeVarintTypes(dAtA, i, uint64(len(m.Owner)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Id) > 0 {
+		i -= len(m.Id)
+		copy(dAtA[i:], m.Id)
+		i = encodeVarintTypes(dAtA, i, uint64(len(m.Id)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.InternalId != 0 {
+		i = encodeVarintTypes(dAtA, i, uint64(m.InternalId))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *Tree) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *Tree) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *Tree) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Count != 0 {
+		i = encodeVarintTypes(dAtA, i, uint64(m.Count))
+		i--
+		dAtA[i] = 0x10
+	}
+	if len(m.Branch) > 0 {
+		for iNdEx := len(m.Branch) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.Branch[iNdEx])
+			copy(dAtA[i:], m.Branch[iNdEx])
+			i = encodeVarintTypes(dAtA, i, uint64(len(m.Branch[iNdEx])))
+			i--
+			dAtA[i] = 0xa
+		}
 	}
 	return len(dAtA) - i, nil
 }
@@ -193,8 +639,12 @@ func (m *InterchainGasPaymaster) Size() (n int) {
 	}
 	var l int
 	_ = l
-	if m.Id != 0 {
-		n += 1 + sovTypes(uint64(m.Id))
+	if m.InternalId != 0 {
+		n += 1 + sovTypes(uint64(m.InternalId))
+	}
+	l = len(m.Id)
+	if l > 0 {
+		n += 1 + l + sovTypes(uint64(l))
 	}
 	l = len(m.Owner)
 	if l > 0 {
@@ -206,6 +656,79 @@ func (m *InterchainGasPaymaster) Size() (n int) {
 	}
 	l = m.ClaimableFees.Size()
 	n += 1 + l + sovTypes(uint64(l))
+	return n
+}
+
+func (m *DestinationGasConfig) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.RemoteDomain != 0 {
+		n += 1 + sovTypes(uint64(m.RemoteDomain))
+	}
+	if m.GasOracle != nil {
+		l = m.GasOracle.Size()
+		n += 1 + l + sovTypes(uint64(l))
+	}
+	l = m.GasOverhead.Size()
+	n += 1 + l + sovTypes(uint64(l))
+	return n
+}
+
+func (m *GasOracle) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = m.TokenExchangeRate.Size()
+	n += 1 + l + sovTypes(uint64(l))
+	l = m.GasPrice.Size()
+	n += 1 + l + sovTypes(uint64(l))
+	return n
+}
+
+func (m *MerkleTreeHook) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.InternalId != 0 {
+		n += 1 + sovTypes(uint64(m.InternalId))
+	}
+	l = len(m.Id)
+	if l > 0 {
+		n += 1 + l + sovTypes(uint64(l))
+	}
+	l = len(m.Owner)
+	if l > 0 {
+		n += 1 + l + sovTypes(uint64(l))
+	}
+	if m.Tree != nil {
+		l = m.Tree.Size()
+		n += 1 + l + sovTypes(uint64(l))
+	}
+	return n
+}
+
+func (m *Tree) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.Branch) > 0 {
+		for _, b := range m.Branch {
+			l = len(b)
+			n += 1 + l + sovTypes(uint64(l))
+		}
+	}
+	if m.Count != 0 {
+		n += 1 + sovTypes(uint64(m.Count))
+	}
 	return n
 }
 
@@ -246,9 +769,9 @@ func (m *InterchainGasPaymaster) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field InternalId", wireType)
 			}
-			m.Id = 0
+			m.InternalId = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowTypes
@@ -258,12 +781,44 @@ func (m *InterchainGasPaymaster) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Id |= uint64(b&0x7F) << shift
+				m.InternalId |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
 		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTypes
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTypes
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTypes
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Id = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Owner", wireType)
 			}
@@ -295,7 +850,7 @@ func (m *InterchainGasPaymaster) Unmarshal(dAtA []byte) error {
 			}
 			m.Owner = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 3:
+		case 4:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Denom", wireType)
 			}
@@ -327,7 +882,7 @@ func (m *InterchainGasPaymaster) Unmarshal(dAtA []byte) error {
 			}
 			m.Denom = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 4:
+		case 5:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field ClaimableFees", wireType)
 			}
@@ -361,6 +916,533 @@ func (m *InterchainGasPaymaster) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTypes(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTypes
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *DestinationGasConfig) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTypes
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: DestinationGasConfig: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: DestinationGasConfig: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RemoteDomain", wireType)
+			}
+			m.RemoteDomain = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTypes
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.RemoteDomain |= uint32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field GasOracle", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTypes
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthTypes
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthTypes
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.GasOracle == nil {
+				m.GasOracle = &GasOracle{}
+			}
+			if err := m.GasOracle.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field GasOverhead", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTypes
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTypes
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTypes
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.GasOverhead.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTypes(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTypes
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *GasOracle) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTypes
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: GasOracle: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: GasOracle: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field TokenExchangeRate", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTypes
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTypes
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTypes
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.TokenExchangeRate.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field GasPrice", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTypes
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTypes
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTypes
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.GasPrice.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTypes(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTypes
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MerkleTreeHook) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTypes
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MerkleTreeHook: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MerkleTreeHook: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field InternalId", wireType)
+			}
+			m.InternalId = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTypes
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.InternalId |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTypes
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTypes
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTypes
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Id = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Owner", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTypes
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTypes
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTypes
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Owner = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Tree", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTypes
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthTypes
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthTypes
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Tree == nil {
+				m.Tree = &Tree{}
+			}
+			if err := m.Tree.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTypes(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTypes
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *Tree) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTypes
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Tree: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Tree: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Branch", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTypes
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthTypes
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTypes
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Branch = append(m.Branch, make([]byte, postIndex-iNdEx))
+			copy(m.Branch[len(m.Branch)-1], dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Count", wireType)
+			}
+			m.Count = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTypes
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Count |= uint32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTypes(dAtA[iNdEx:])

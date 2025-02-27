@@ -221,11 +221,320 @@ func (m *QueryIgpResponse) GetIgp() InterchainGasPaymaster {
 	return InterchainGasPaymaster{}
 }
 
+// QueryDestinationGasConfigsRequest ...
+type QueryDestinationGasConfigsRequest struct {
+	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+}
+
+func (m *QueryDestinationGasConfigsRequest) Reset()         { *m = QueryDestinationGasConfigsRequest{} }
+func (m *QueryDestinationGasConfigsRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryDestinationGasConfigsRequest) ProtoMessage()    {}
+func (*QueryDestinationGasConfigsRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_32e5ceb03adb8f60, []int{4}
+}
+func (m *QueryDestinationGasConfigsRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryDestinationGasConfigsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryDestinationGasConfigsRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryDestinationGasConfigsRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryDestinationGasConfigsRequest.Merge(m, src)
+}
+func (m *QueryDestinationGasConfigsRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryDestinationGasConfigsRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryDestinationGasConfigsRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryDestinationGasConfigsRequest proto.InternalMessageInfo
+
+func (m *QueryDestinationGasConfigsRequest) GetId() string {
+	if m != nil {
+		return m.Id
+	}
+	return ""
+}
+
+// QueryDestinationGasConfigsResponse ...
+type QueryDestinationGasConfigsResponse struct {
+	// TODO support pagination
+	DestinationGasConfigs []*DestinationGasConfig `protobuf:"bytes,1,rep,name=destination_gas_configs,json=destinationGasConfigs,proto3" json:"destination_gas_configs,omitempty"`
+}
+
+func (m *QueryDestinationGasConfigsResponse) Reset()         { *m = QueryDestinationGasConfigsResponse{} }
+func (m *QueryDestinationGasConfigsResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryDestinationGasConfigsResponse) ProtoMessage()    {}
+func (*QueryDestinationGasConfigsResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_32e5ceb03adb8f60, []int{5}
+}
+func (m *QueryDestinationGasConfigsResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryDestinationGasConfigsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryDestinationGasConfigsResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryDestinationGasConfigsResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryDestinationGasConfigsResponse.Merge(m, src)
+}
+func (m *QueryDestinationGasConfigsResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryDestinationGasConfigsResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryDestinationGasConfigsResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryDestinationGasConfigsResponse proto.InternalMessageInfo
+
+func (m *QueryDestinationGasConfigsResponse) GetDestinationGasConfigs() []*DestinationGasConfig {
+	if m != nil {
+		return m.DestinationGasConfigs
+	}
+	return nil
+}
+
+// QueryQuoteGasPaymentRequest ...
+type QueryQuoteGasPaymentRequest struct {
+	IgpId             string `protobuf:"bytes,1,opt,name=igp_id,json=igpId,proto3" json:"igp_id,omitempty"`
+	DestinationDomain string `protobuf:"bytes,2,opt,name=destination_domain,json=destinationDomain,proto3" json:"destination_domain,omitempty"`
+	GasLimit          string `protobuf:"bytes,3,opt,name=gas_limit,json=gasLimit,proto3" json:"gas_limit,omitempty"`
+}
+
+func (m *QueryQuoteGasPaymentRequest) Reset()         { *m = QueryQuoteGasPaymentRequest{} }
+func (m *QueryQuoteGasPaymentRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryQuoteGasPaymentRequest) ProtoMessage()    {}
+func (*QueryQuoteGasPaymentRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_32e5ceb03adb8f60, []int{6}
+}
+func (m *QueryQuoteGasPaymentRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryQuoteGasPaymentRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryQuoteGasPaymentRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryQuoteGasPaymentRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryQuoteGasPaymentRequest.Merge(m, src)
+}
+func (m *QueryQuoteGasPaymentRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryQuoteGasPaymentRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryQuoteGasPaymentRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryQuoteGasPaymentRequest proto.InternalMessageInfo
+
+func (m *QueryQuoteGasPaymentRequest) GetIgpId() string {
+	if m != nil {
+		return m.IgpId
+	}
+	return ""
+}
+
+func (m *QueryQuoteGasPaymentRequest) GetDestinationDomain() string {
+	if m != nil {
+		return m.DestinationDomain
+	}
+	return ""
+}
+
+func (m *QueryQuoteGasPaymentRequest) GetGasLimit() string {
+	if m != nil {
+		return m.GasLimit
+	}
+	return ""
+}
+
+// QueryQuoteGasPaymentResponse ...
+type QueryQuoteGasPaymentResponse struct {
+	GasPayment string `protobuf:"bytes,1,opt,name=gas_payment,json=gasPayment,proto3" json:"gas_payment,omitempty"`
+}
+
+func (m *QueryQuoteGasPaymentResponse) Reset()         { *m = QueryQuoteGasPaymentResponse{} }
+func (m *QueryQuoteGasPaymentResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryQuoteGasPaymentResponse) ProtoMessage()    {}
+func (*QueryQuoteGasPaymentResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_32e5ceb03adb8f60, []int{7}
+}
+func (m *QueryQuoteGasPaymentResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryQuoteGasPaymentResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryQuoteGasPaymentResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryQuoteGasPaymentResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryQuoteGasPaymentResponse.Merge(m, src)
+}
+func (m *QueryQuoteGasPaymentResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryQuoteGasPaymentResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryQuoteGasPaymentResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryQuoteGasPaymentResponse proto.InternalMessageInfo
+
+func (m *QueryQuoteGasPaymentResponse) GetGasPayment() string {
+	if m != nil {
+		return m.GasPayment
+	}
+	return ""
+}
+
+// QueryCountRequest ...
+type QueryMerkleTreeHook struct {
+	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+}
+
+func (m *QueryMerkleTreeHook) Reset()         { *m = QueryMerkleTreeHook{} }
+func (m *QueryMerkleTreeHook) String() string { return proto.CompactTextString(m) }
+func (*QueryMerkleTreeHook) ProtoMessage()    {}
+func (*QueryMerkleTreeHook) Descriptor() ([]byte, []int) {
+	return fileDescriptor_32e5ceb03adb8f60, []int{8}
+}
+func (m *QueryMerkleTreeHook) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryMerkleTreeHook) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryMerkleTreeHook.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryMerkleTreeHook) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryMerkleTreeHook.Merge(m, src)
+}
+func (m *QueryMerkleTreeHook) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryMerkleTreeHook) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryMerkleTreeHook.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryMerkleTreeHook proto.InternalMessageInfo
+
+func (m *QueryMerkleTreeHook) GetId() string {
+	if m != nil {
+		return m.Id
+	}
+	return ""
+}
+
+// QueryCountResponse ...
+type QueryMerkleTreeHookResponse struct {
+	Root           []byte          `protobuf:"bytes,1,opt,name=root,proto3" json:"root,omitempty"`
+	Count          uint32          `protobuf:"varint,2,opt,name=count,proto3" json:"count,omitempty"`
+	MerkleTreeHook *MerkleTreeHook `protobuf:"bytes,3,opt,name=merkle_tree_hook,json=merkleTreeHook,proto3" json:"merkle_tree_hook,omitempty"`
+}
+
+func (m *QueryMerkleTreeHookResponse) Reset()         { *m = QueryMerkleTreeHookResponse{} }
+func (m *QueryMerkleTreeHookResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryMerkleTreeHookResponse) ProtoMessage()    {}
+func (*QueryMerkleTreeHookResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_32e5ceb03adb8f60, []int{9}
+}
+func (m *QueryMerkleTreeHookResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryMerkleTreeHookResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryMerkleTreeHookResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryMerkleTreeHookResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryMerkleTreeHookResponse.Merge(m, src)
+}
+func (m *QueryMerkleTreeHookResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryMerkleTreeHookResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryMerkleTreeHookResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryMerkleTreeHookResponse proto.InternalMessageInfo
+
+func (m *QueryMerkleTreeHookResponse) GetRoot() []byte {
+	if m != nil {
+		return m.Root
+	}
+	return nil
+}
+
+func (m *QueryMerkleTreeHookResponse) GetCount() uint32 {
+	if m != nil {
+		return m.Count
+	}
+	return 0
+}
+
+func (m *QueryMerkleTreeHookResponse) GetMerkleTreeHook() *MerkleTreeHook {
+	if m != nil {
+		return m.MerkleTreeHook
+	}
+	return nil
+}
+
 func init() {
 	proto.RegisterType((*QueryIgpsRequest)(nil), "hyperlane.core.post_dispatch.v1.QueryIgpsRequest")
 	proto.RegisterType((*QueryIgpsResponse)(nil), "hyperlane.core.post_dispatch.v1.QueryIgpsResponse")
 	proto.RegisterType((*QueryIgpRequest)(nil), "hyperlane.core.post_dispatch.v1.QueryIgpRequest")
 	proto.RegisterType((*QueryIgpResponse)(nil), "hyperlane.core.post_dispatch.v1.QueryIgpResponse")
+	proto.RegisterType((*QueryDestinationGasConfigsRequest)(nil), "hyperlane.core.post_dispatch.v1.QueryDestinationGasConfigsRequest")
+	proto.RegisterType((*QueryDestinationGasConfigsResponse)(nil), "hyperlane.core.post_dispatch.v1.QueryDestinationGasConfigsResponse")
+	proto.RegisterType((*QueryQuoteGasPaymentRequest)(nil), "hyperlane.core.post_dispatch.v1.QueryQuoteGasPaymentRequest")
+	proto.RegisterType((*QueryQuoteGasPaymentResponse)(nil), "hyperlane.core.post_dispatch.v1.QueryQuoteGasPaymentResponse")
+	proto.RegisterType((*QueryMerkleTreeHook)(nil), "hyperlane.core.post_dispatch.v1.QueryMerkleTreeHook")
+	proto.RegisterType((*QueryMerkleTreeHookResponse)(nil), "hyperlane.core.post_dispatch.v1.QueryMerkleTreeHookResponse")
 }
 
 func init() {
@@ -233,39 +542,59 @@ func init() {
 }
 
 var fileDescriptor_32e5ceb03adb8f60 = []byte{
-	// 498 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x93, 0x4d, 0x8b, 0x13, 0x31,
-	0x1c, 0xc6, 0x9b, 0xe9, 0x2a, 0x6c, 0x16, 0xd4, 0x0d, 0x1e, 0x96, 0xa2, 0xd3, 0x75, 0xf0, 0x65,
-	0xa9, 0x34, 0x71, 0xea, 0xc1, 0xfb, 0x1e, 0x2c, 0xbd, 0xad, 0x45, 0x3c, 0xec, 0x65, 0xc9, 0xcc,
-	0xc4, 0x4c, 0x60, 0x9b, 0x64, 0x27, 0xe9, 0x60, 0x11, 0x2f, 0x7e, 0x02, 0x41, 0xf1, 0x33, 0x78,
-	0xf4, 0x20, 0xf8, 0x15, 0xf6, 0xb8, 0xe0, 0xc5, 0x93, 0x48, 0x2b, 0xf8, 0x35, 0x64, 0x32, 0xe9,
-	0x76, 0xeb, 0xc1, 0x5a, 0xd8, 0x4b, 0x09, 0x49, 0xfe, 0x4f, 0x7e, 0xcf, 0xd3, 0x79, 0xe0, 0xc3,
-	0x7c, 0xa2, 0x59, 0x71, 0x4c, 0x25, 0x23, 0xa9, 0x2a, 0x18, 0xd1, 0xca, 0xd8, 0xa3, 0x4c, 0x18,
-	0x4d, 0x6d, 0x9a, 0x93, 0x32, 0x26, 0x27, 0x63, 0x56, 0x4c, 0xb0, 0x2e, 0x94, 0x55, 0xa8, 0x7d,
-	0x7e, 0x19, 0x57, 0x97, 0xf1, 0xd2, 0x65, 0x5c, 0xc6, 0xad, 0x4e, 0xaa, 0xcc, 0x48, 0x19, 0x92,
-	0x50, 0xc3, 0xea, 0x49, 0x52, 0xc6, 0x09, 0xb3, 0x34, 0x26, 0x9a, 0x72, 0x21, 0xa9, 0x15, 0x4a,
-	0xd6, 0x62, 0xad, 0x5b, 0x5c, 0x29, 0x7e, 0xcc, 0x08, 0xd5, 0x82, 0x50, 0x29, 0x95, 0x75, 0x87,
-	0xc6, 0x9f, 0x6e, 0xd3, 0x91, 0x90, 0x8a, 0xb8, 0x5f, 0xbf, 0x75, 0x93, 0x2b, 0xae, 0xdc, 0x92,
-	0x54, 0x2b, 0xbf, 0xbb, 0xd2, 0x80, 0x9d, 0x68, 0xe6, 0x55, 0xa3, 0x43, 0x78, 0xe3, 0x59, 0x45,
-	0x35, 0xe0, 0xda, 0x0c, 0xd9, 0xc9, 0x98, 0x19, 0x8b, 0x9e, 0x42, 0xb8, 0x60, 0xdb, 0x01, 0xbb,
-	0x60, 0x6f, 0xab, 0x77, 0x1f, 0xd7, 0x46, 0x70, 0x65, 0x04, 0xd7, 0x11, 0x78, 0x23, 0xf8, 0x80,
-	0x72, 0xe6, 0x67, 0x87, 0x17, 0x26, 0xa3, 0x2f, 0x00, 0x6e, 0x5f, 0x10, 0x37, 0x5a, 0x49, 0xc3,
-	0xd0, 0x0b, 0xb8, 0x21, 0xb8, 0x36, 0x3b, 0x60, 0xb7, 0xb9, 0xb7, 0xd5, 0x7b, 0x82, 0x57, 0x24,
-	0x88, 0x07, 0xd2, 0xb2, 0x22, 0xcd, 0xa9, 0x90, 0x7d, 0x6a, 0x0e, 0xe8, 0x64, 0x44, 0x8d, 0x65,
-	0xc5, 0xfe, 0xe6, 0xe9, 0x8f, 0x76, 0xe3, 0xd3, 0xef, 0xcf, 0x1d, 0x30, 0x74, 0x7a, 0xa8, 0xbf,
-	0x44, 0x1d, 0x38, 0xea, 0x07, 0x2b, 0xa9, 0x6b, 0xa8, 0x25, 0xec, 0x3b, 0xf0, 0xfa, 0x9c, 0x7a,
-	0x9e, 0xc8, 0x35, 0x18, 0x88, 0xcc, 0x25, 0xb1, 0x39, 0x0c, 0x44, 0x16, 0xe5, 0x8b, 0xd4, 0xce,
-	0x7d, 0x3d, 0x87, 0x4d, 0xc1, 0xb5, 0x8f, 0xeb, 0x32, 0x6c, 0x55, 0x72, 0xbd, 0xaf, 0x01, 0xbc,
-	0xe2, 0x9e, 0x42, 0x1f, 0x00, 0xdc, 0xa8, 0x82, 0x44, 0xf1, 0x4a, 0xed, 0xbf, 0xff, 0xd1, 0x56,
-	0x6f, 0x9d, 0x91, 0xda, 0x4f, 0x74, 0xef, 0xed, 0xb7, 0x5f, 0xef, 0x83, 0x36, 0xba, 0x4d, 0x16,
-	0xdf, 0x53, 0x19, 0x77, 0x0b, 0xf6, 0x92, 0xa6, 0x56, 0x15, 0x2c, 0x23, 0x2e, 0xf6, 0x8f, 0x00,
-	0x36, 0x07, 0x5c, 0xa3, 0x47, 0xff, 0xfd, 0xc4, 0x1c, 0x2a, 0x5e, 0x63, 0xc2, 0x33, 0x75, 0x1c,
-	0xd3, 0x5d, 0x14, 0xfd, 0x93, 0x89, 0xbc, 0x16, 0xd9, 0x9b, 0x7d, 0x7a, 0x3a, 0x0d, 0xc1, 0xd9,
-	0x34, 0x04, 0x3f, 0xa7, 0x21, 0x78, 0x37, 0x0b, 0x1b, 0x67, 0xb3, 0xb0, 0xf1, 0x7d, 0x16, 0x36,
-	0x0e, 0xfb, 0x5c, 0xd8, 0x7c, 0x9c, 0xe0, 0x54, 0x8d, 0x48, 0x92, 0xea, 0xae, 0x90, 0x52, 0x95,
-	0x75, 0xd7, 0x16, 0xba, 0x5d, 0x5f, 0xdc, 0x57, 0x75, 0x89, 0x8e, 0x96, 0x5b, 0xe4, 0x2a, 0x94,
-	0x5c, 0x75, 0x1d, 0x7a, 0xfc, 0x27, 0x00, 0x00, 0xff, 0xff, 0x34, 0xd2, 0x11, 0x68, 0x33, 0x04,
-	0x00, 0x00,
+	// 819 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x96, 0xcf, 0x6b, 0x24, 0x45,
+	0x14, 0xc7, 0xa7, 0x67, 0x92, 0xe0, 0xd4, 0x68, 0xdc, 0x94, 0x09, 0x1b, 0x67, 0x97, 0x99, 0x4d,
+	0xa3, 0xbb, 0xcb, 0x6a, 0xba, 0xec, 0x59, 0x65, 0x2f, 0x2b, 0x42, 0x76, 0x71, 0x1c, 0x50, 0x48,
+	0x9a, 0x20, 0x98, 0x4b, 0x53, 0xd3, 0x5d, 0xd6, 0x14, 0x99, 0xee, 0xaa, 0x74, 0xd5, 0x0c, 0x0e,
+	0x22, 0x88, 0x37, 0xf1, 0x22, 0xe4, 0x3f, 0xf0, 0xe4, 0x51, 0x44, 0xf0, 0x5f, 0xc8, 0x31, 0xe0,
+	0x45, 0x2f, 0x22, 0x89, 0xe0, 0xc5, 0x3f, 0x42, 0xba, 0xba, 0xe6, 0x47, 0x4f, 0x26, 0x99, 0x49,
+	0xdc, 0xcb, 0xd0, 0xdd, 0xf5, 0xde, 0xf7, 0x7d, 0xbe, 0xaf, 0x78, 0x55, 0x03, 0xde, 0xea, 0x0c,
+	0x04, 0x49, 0xba, 0x38, 0x26, 0x28, 0xe0, 0x09, 0x41, 0x82, 0x4b, 0xe5, 0x87, 0x4c, 0x0a, 0xac,
+	0x82, 0x0e, 0xea, 0xbb, 0xe8, 0xa8, 0x47, 0x92, 0x81, 0x23, 0x12, 0xae, 0x38, 0xac, 0x8f, 0x82,
+	0x9d, 0x34, 0xd8, 0xc9, 0x05, 0x3b, 0x7d, 0xb7, 0xfa, 0x28, 0xe0, 0x32, 0xe2, 0x12, 0xb5, 0xb1,
+	0x24, 0x59, 0x26, 0xea, 0xbb, 0x6d, 0xa2, 0xb0, 0x8b, 0x04, 0xa6, 0x2c, 0xc6, 0x8a, 0xf1, 0x38,
+	0x13, 0xab, 0xde, 0xa5, 0x9c, 0xd3, 0x2e, 0x41, 0x58, 0x30, 0x84, 0xe3, 0x98, 0x2b, 0xbd, 0x28,
+	0xcd, 0xea, 0x1a, 0x8e, 0x58, 0xcc, 0x91, 0xfe, 0x35, 0x9f, 0xd6, 0x29, 0xa7, 0x5c, 0x3f, 0xa2,
+	0xf4, 0xc9, 0x7c, 0x9d, 0x6b, 0x40, 0x0d, 0x04, 0x31, 0xaa, 0xf6, 0x01, 0xb8, 0xb5, 0x97, 0x52,
+	0xb5, 0xa8, 0x90, 0x1e, 0x39, 0xea, 0x11, 0xa9, 0xe0, 0x87, 0x00, 0x8c, 0xd9, 0x36, 0xad, 0x7b,
+	0xd6, 0xc3, 0x4a, 0xe3, 0xbe, 0x93, 0x19, 0x71, 0x52, 0x23, 0x4e, 0xd6, 0x02, 0x63, 0xc4, 0xd9,
+	0xc5, 0x94, 0x98, 0x5c, 0x6f, 0x22, 0xd3, 0xfe, 0xc5, 0x02, 0x6b, 0x13, 0xe2, 0x52, 0xf0, 0x58,
+	0x12, 0xf8, 0x29, 0x58, 0x62, 0x54, 0xc8, 0x4d, 0xeb, 0x5e, 0xe9, 0x61, 0xa5, 0xf1, 0xc4, 0x99,
+	0xd3, 0x41, 0xa7, 0x15, 0x2b, 0x92, 0x04, 0x1d, 0xcc, 0xe2, 0x26, 0x96, 0xbb, 0x78, 0x10, 0x61,
+	0xa9, 0x48, 0xb2, 0x53, 0x3e, 0xf9, 0xb3, 0x5e, 0xf8, 0xf1, 0x9f, 0x9f, 0x1e, 0x59, 0x9e, 0xd6,
+	0x83, 0xcd, 0x1c, 0x75, 0x51, 0x53, 0x3f, 0x98, 0x4b, 0x9d, 0x41, 0xe5, 0xb0, 0xb7, 0xc0, 0xab,
+	0x43, 0xea, 0x61, 0x47, 0x56, 0x41, 0x91, 0x85, 0xba, 0x13, 0x65, 0xaf, 0xc8, 0x42, 0xbb, 0x33,
+	0xee, 0xda, 0xc8, 0xd7, 0x3e, 0x28, 0x31, 0x2a, 0x4c, 0xbb, 0x5e, 0x84, 0xad, 0x54, 0xce, 0x7e,
+	0x0c, 0xb6, 0x74, 0xa5, 0xe7, 0x44, 0x2a, 0x03, 0xd8, 0xc4, 0xf2, 0x19, 0x8f, 0x3f, 0x67, 0x54,
+	0x5e, 0x86, 0x77, 0x6c, 0x01, 0xfb, 0xaa, 0x2c, 0x43, 0x1c, 0x81, 0xdb, 0xe1, 0x38, 0xc0, 0xa7,
+	0x58, 0xfa, 0x41, 0x16, 0x62, 0x36, 0xe7, 0xbd, 0xb9, 0x2e, 0x66, 0x15, 0xf0, 0x36, 0xc2, 0x59,
+	0x65, 0xed, 0xaf, 0x2d, 0x70, 0x47, 0x53, 0xed, 0xf5, 0xb8, 0x22, 0xc6, 0x35, 0x89, 0xd5, 0xd0,
+	0xc5, 0x06, 0x58, 0x61, 0x54, 0xf8, 0x23, 0x27, 0xcb, 0x8c, 0x8a, 0x56, 0x08, 0xb7, 0x01, 0x9c,
+	0xa4, 0x0c, 0x79, 0x84, 0x59, 0xb6, 0xbf, 0x65, 0x6f, 0x6d, 0x62, 0xe5, 0xb9, 0x5e, 0x80, 0x77,
+	0x40, 0x39, 0x35, 0xd2, 0x65, 0x11, 0x53, 0x9b, 0x25, 0x1d, 0xf5, 0x12, 0xc5, 0xf2, 0xe3, 0xf4,
+	0xdd, 0xfe, 0x00, 0xdc, 0x9d, 0x4d, 0x60, 0x3a, 0x52, 0x07, 0x95, 0x34, 0x59, 0x64, 0x9f, 0x0d,
+	0x07, 0xa0, 0xa3, 0x40, 0xfb, 0x4d, 0xf0, 0x9a, 0x16, 0xf8, 0x84, 0x24, 0x87, 0x5d, 0xb2, 0x9f,
+	0x10, 0xf2, 0x11, 0xe7, 0x87, 0x17, 0x36, 0xe0, 0x87, 0xa1, 0xd5, 0x7c, 0xdc, 0xa8, 0x0e, 0x04,
+	0x4b, 0x09, 0xe7, 0x59, 0x81, 0x97, 0x3d, 0xfd, 0x0c, 0xd7, 0xc1, 0x72, 0xc0, 0x7b, 0xb1, 0xd2,
+	0xd6, 0x5e, 0xf1, 0xb2, 0x17, 0xf8, 0x19, 0xb8, 0x15, 0x69, 0x0d, 0x5f, 0x25, 0x84, 0xf8, 0x1d,
+	0xce, 0x0f, 0xb5, 0xab, 0x4a, 0x03, 0xcd, 0xdd, 0x9c, 0xa9, 0xe2, 0xab, 0x51, 0xee, 0xbd, 0xf1,
+	0xef, 0x0a, 0x58, 0xd6, 0x90, 0xf0, 0x5b, 0x0b, 0x2c, 0xa5, 0x33, 0x0a, 0xdd, 0xb9, 0x9a, 0xd3,
+	0x87, 0x45, 0xb5, 0x71, 0x9d, 0x94, 0xcc, 0xbe, 0x5d, 0xfd, 0xe6, 0xb7, 0xbf, 0x8f, 0x8b, 0xeb,
+	0x10, 0xa2, 0xf1, 0x51, 0xd5, 0x77, 0x91, 0x1e, 0xe3, 0xef, 0x2c, 0x50, 0x6a, 0x51, 0x01, 0xdf,
+	0x59, 0x58, 0x77, 0x48, 0xe2, 0x5e, 0x23, 0xc3, 0x80, 0xd4, 0x35, 0xc8, 0xeb, 0xf0, 0xf6, 0x45,
+	0x10, 0xf4, 0x25, 0x0b, 0xbf, 0x82, 0x7f, 0x58, 0x60, 0x63, 0xe6, 0x10, 0xc1, 0x9d, 0xc5, 0xaa,
+	0x5d, 0x35, 0xb7, 0xd5, 0x67, 0xff, 0x4b, 0xc3, 0x78, 0x78, 0xa2, 0x3d, 0xb8, 0x10, 0x5d, 0xe2,
+	0x01, 0x5d, 0x32, 0xe3, 0xf0, 0x57, 0x2b, 0x3d, 0xe8, 0x72, 0x83, 0x00, 0x9f, 0x2e, 0x46, 0x34,
+	0x7b, 0x82, 0xab, 0xef, 0xdf, 0x30, 0xdb, 0x38, 0x79, 0xa0, 0x9d, 0x6c, 0xc1, 0x7a, 0xde, 0xc9,
+	0x51, 0x1a, 0xee, 0x4f, 0xcc, 0x25, 0xfc, 0xd9, 0x02, 0xab, 0x53, 0x13, 0xf8, 0xee, 0x62, 0xa5,
+	0xf3, 0x59, 0xd5, 0xa7, 0x37, 0xc9, 0x1a, 0xf1, 0xbe, 0xad, 0x79, 0xef, 0xc3, 0x37, 0xf2, 0xbc,
+	0xd3, 0xf3, 0x9a, 0x6d, 0xc3, 0x0e, 0x3e, 0x39, 0xab, 0x59, 0xa7, 0x67, 0x35, 0xeb, 0xaf, 0xb3,
+	0x9a, 0xf5, 0xfd, 0x79, 0xad, 0x70, 0x7a, 0x5e, 0x2b, 0xfc, 0x7e, 0x5e, 0x2b, 0x1c, 0x34, 0x29,
+	0x53, 0x9d, 0x5e, 0xdb, 0x09, 0x78, 0x84, 0xda, 0x81, 0xd8, 0x66, 0x71, 0xcc, 0xfb, 0xd9, 0xdd,
+	0x3f, 0x56, 0xde, 0x36, 0x7f, 0x24, 0xbe, 0xc8, 0x2e, 0x75, 0x3f, 0x7f, 0xab, 0xeb, 0x2b, 0xbd,
+	0xbd, 0xa2, 0xef, 0xf4, 0xc7, 0xff, 0x05, 0x00, 0x00, 0xff, 0xff, 0x75, 0xf2, 0xc0, 0xca, 0xc3,
+	0x08, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -284,6 +613,12 @@ type QueryClient interface {
 	Igps(ctx context.Context, in *QueryIgpsRequest, opts ...grpc.CallOption) (*QueryIgpsResponse, error)
 	// Igp ...
 	Igp(ctx context.Context, in *QueryIgpRequest, opts ...grpc.CallOption) (*QueryIgpResponse, error)
+	// DestinationGasConfigs ...
+	DestinationGasConfigs(ctx context.Context, in *QueryDestinationGasConfigsRequest, opts ...grpc.CallOption) (*QueryDestinationGasConfigsResponse, error)
+	// QuoteGasPayment ...
+	QuoteGasPayment(ctx context.Context, in *QueryQuoteGasPaymentRequest, opts ...grpc.CallOption) (*QueryQuoteGasPaymentResponse, error)
+	// Count ...
+	MerkleTreeHook(ctx context.Context, in *QueryMerkleTreeHook, opts ...grpc.CallOption) (*QueryMerkleTreeHookResponse, error)
 }
 
 type queryClient struct {
@@ -312,12 +647,45 @@ func (c *queryClient) Igp(ctx context.Context, in *QueryIgpRequest, opts ...grpc
 	return out, nil
 }
 
+func (c *queryClient) DestinationGasConfigs(ctx context.Context, in *QueryDestinationGasConfigsRequest, opts ...grpc.CallOption) (*QueryDestinationGasConfigsResponse, error) {
+	out := new(QueryDestinationGasConfigsResponse)
+	err := c.cc.Invoke(ctx, "/hyperlane.core.post_dispatch.v1.Query/DestinationGasConfigs", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) QuoteGasPayment(ctx context.Context, in *QueryQuoteGasPaymentRequest, opts ...grpc.CallOption) (*QueryQuoteGasPaymentResponse, error) {
+	out := new(QueryQuoteGasPaymentResponse)
+	err := c.cc.Invoke(ctx, "/hyperlane.core.post_dispatch.v1.Query/QuoteGasPayment", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) MerkleTreeHook(ctx context.Context, in *QueryMerkleTreeHook, opts ...grpc.CallOption) (*QueryMerkleTreeHookResponse, error) {
+	out := new(QueryMerkleTreeHookResponse)
+	err := c.cc.Invoke(ctx, "/hyperlane.core.post_dispatch.v1.Query/MerkleTreeHook", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 type QueryServer interface {
 	// Igps ...
 	Igps(context.Context, *QueryIgpsRequest) (*QueryIgpsResponse, error)
 	// Igp ...
 	Igp(context.Context, *QueryIgpRequest) (*QueryIgpResponse, error)
+	// DestinationGasConfigs ...
+	DestinationGasConfigs(context.Context, *QueryDestinationGasConfigsRequest) (*QueryDestinationGasConfigsResponse, error)
+	// QuoteGasPayment ...
+	QuoteGasPayment(context.Context, *QueryQuoteGasPaymentRequest) (*QueryQuoteGasPaymentResponse, error)
+	// Count ...
+	MerkleTreeHook(context.Context, *QueryMerkleTreeHook) (*QueryMerkleTreeHookResponse, error)
 }
 
 // UnimplementedQueryServer can be embedded to have forward compatible implementations.
@@ -329,6 +697,15 @@ func (*UnimplementedQueryServer) Igps(ctx context.Context, req *QueryIgpsRequest
 }
 func (*UnimplementedQueryServer) Igp(ctx context.Context, req *QueryIgpRequest) (*QueryIgpResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Igp not implemented")
+}
+func (*UnimplementedQueryServer) DestinationGasConfigs(ctx context.Context, req *QueryDestinationGasConfigsRequest) (*QueryDestinationGasConfigsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DestinationGasConfigs not implemented")
+}
+func (*UnimplementedQueryServer) QuoteGasPayment(ctx context.Context, req *QueryQuoteGasPaymentRequest) (*QueryQuoteGasPaymentResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method QuoteGasPayment not implemented")
+}
+func (*UnimplementedQueryServer) MerkleTreeHook(ctx context.Context, req *QueryMerkleTreeHook) (*QueryMerkleTreeHookResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method MerkleTreeHook not implemented")
 }
 
 func RegisterQueryServer(s grpc1.Server, srv QueryServer) {
@@ -371,6 +748,60 @@ func _Query_Igp_Handler(srv interface{}, ctx context.Context, dec func(interface
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_DestinationGasConfigs_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryDestinationGasConfigsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).DestinationGasConfigs(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/hyperlane.core.post_dispatch.v1.Query/DestinationGasConfigs",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).DestinationGasConfigs(ctx, req.(*QueryDestinationGasConfigsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_QuoteGasPayment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryQuoteGasPaymentRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).QuoteGasPayment(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/hyperlane.core.post_dispatch.v1.Query/QuoteGasPayment",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).QuoteGasPayment(ctx, req.(*QueryQuoteGasPaymentRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_MerkleTreeHook_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryMerkleTreeHook)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).MerkleTreeHook(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/hyperlane.core.post_dispatch.v1.Query/MerkleTreeHook",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).MerkleTreeHook(ctx, req.(*QueryMerkleTreeHook))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var Query_serviceDesc = _Query_serviceDesc
 var _Query_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "hyperlane.core.post_dispatch.v1.Query",
@@ -383,6 +814,18 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Igp",
 			Handler:    _Query_Igp_Handler,
+		},
+		{
+			MethodName: "DestinationGasConfigs",
+			Handler:    _Query_DestinationGasConfigs_Handler,
+		},
+		{
+			MethodName: "QuoteGasPayment",
+			Handler:    _Query_QuoteGasPayment_Handler,
+		},
+		{
+			MethodName: "MerkleTreeHook",
+			Handler:    _Query_MerkleTreeHook_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -536,6 +979,224 @@ func (m *QueryIgpResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
+func (m *QueryDestinationGasConfigsRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryDestinationGasConfigsRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryDestinationGasConfigsRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Id) > 0 {
+		i -= len(m.Id)
+		copy(dAtA[i:], m.Id)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Id)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryDestinationGasConfigsResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryDestinationGasConfigsResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryDestinationGasConfigsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.DestinationGasConfigs) > 0 {
+		for iNdEx := len(m.DestinationGasConfigs) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.DestinationGasConfigs[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintQuery(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0xa
+		}
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryQuoteGasPaymentRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryQuoteGasPaymentRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryQuoteGasPaymentRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.GasLimit) > 0 {
+		i -= len(m.GasLimit)
+		copy(dAtA[i:], m.GasLimit)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.GasLimit)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.DestinationDomain) > 0 {
+		i -= len(m.DestinationDomain)
+		copy(dAtA[i:], m.DestinationDomain)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.DestinationDomain)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.IgpId) > 0 {
+		i -= len(m.IgpId)
+		copy(dAtA[i:], m.IgpId)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.IgpId)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryQuoteGasPaymentResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryQuoteGasPaymentResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryQuoteGasPaymentResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.GasPayment) > 0 {
+		i -= len(m.GasPayment)
+		copy(dAtA[i:], m.GasPayment)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.GasPayment)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryMerkleTreeHook) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryMerkleTreeHook) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryMerkleTreeHook) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Id) > 0 {
+		i -= len(m.Id)
+		copy(dAtA[i:], m.Id)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Id)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryMerkleTreeHookResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryMerkleTreeHookResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryMerkleTreeHookResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.MerkleTreeHook != nil {
+		{
+			size, err := m.MerkleTreeHook.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x1a
+	}
+	if m.Count != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.Count))
+		i--
+		dAtA[i] = 0x10
+	}
+	if len(m.Root) > 0 {
+		i -= len(m.Root)
+		copy(dAtA[i:], m.Root)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Root)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintQuery(dAtA []byte, offset int, v uint64) int {
 	offset -= sovQuery(v)
 	base := offset
@@ -600,6 +1261,101 @@ func (m *QueryIgpResponse) Size() (n int) {
 	_ = l
 	l = m.Igp.Size()
 	n += 1 + l + sovQuery(uint64(l))
+	return n
+}
+
+func (m *QueryDestinationGasConfigsRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Id)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryDestinationGasConfigsResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.DestinationGasConfigs) > 0 {
+		for _, e := range m.DestinationGasConfigs {
+			l = e.Size()
+			n += 1 + l + sovQuery(uint64(l))
+		}
+	}
+	return n
+}
+
+func (m *QueryQuoteGasPaymentRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.IgpId)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	l = len(m.DestinationDomain)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	l = len(m.GasLimit)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryQuoteGasPaymentResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.GasPayment)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryMerkleTreeHook) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Id)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryMerkleTreeHookResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Root)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	if m.Count != 0 {
+		n += 1 + sovQuery(uint64(m.Count))
+	}
+	if m.MerkleTreeHook != nil {
+		l = m.MerkleTreeHook.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
 	return n
 }
 
@@ -956,6 +1712,621 @@ func (m *QueryIgpResponse) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			if err := m.Igp.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryDestinationGasConfigsRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryDestinationGasConfigsRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryDestinationGasConfigsRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Id = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryDestinationGasConfigsResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryDestinationGasConfigsResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryDestinationGasConfigsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DestinationGasConfigs", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DestinationGasConfigs = append(m.DestinationGasConfigs, &DestinationGasConfig{})
+			if err := m.DestinationGasConfigs[len(m.DestinationGasConfigs)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryQuoteGasPaymentRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryQuoteGasPaymentRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryQuoteGasPaymentRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field IgpId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.IgpId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DestinationDomain", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DestinationDomain = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field GasLimit", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.GasLimit = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryQuoteGasPaymentResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryQuoteGasPaymentResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryQuoteGasPaymentResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field GasPayment", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.GasPayment = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryMerkleTreeHook) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryMerkleTreeHook: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryMerkleTreeHook: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Id = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryMerkleTreeHookResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryMerkleTreeHookResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryMerkleTreeHookResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Root", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Root = append(m.Root[:0], dAtA[iNdEx:postIndex]...)
+			if m.Root == nil {
+				m.Root = []byte{}
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Count", wireType)
+			}
+			m.Count = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Count |= uint32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MerkleTreeHook", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.MerkleTreeHook == nil {
+				m.MerkleTreeHook = &MerkleTreeHook{}
+			}
+			if err := m.MerkleTreeHook.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex

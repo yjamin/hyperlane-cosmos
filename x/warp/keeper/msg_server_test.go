@@ -8,6 +8,7 @@ import (
 	i "github.com/bcp-innovations/hyperlane-cosmos/tests/integration"
 	"github.com/bcp-innovations/hyperlane-cosmos/util"
 	ismTypes "github.com/bcp-innovations/hyperlane-cosmos/x/core/_interchain_security/types"
+	pdTypes "github.com/bcp-innovations/hyperlane-cosmos/x/core/_post_dispatch/types"
 	coreKeeper "github.com/bcp-innovations/hyperlane-cosmos/x/core/keeper"
 	coreTypes "github.com/bcp-innovations/hyperlane-cosmos/x/core/types"
 	"github.com/bcp-innovations/hyperlane-cosmos/x/warp/keeper"
@@ -59,6 +60,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 	var s *i.KeeperTestSuite
 	var owner i.TestValidatorAddress
 	var sender i.TestValidatorAddress
+	var noopPostDispatchHandler *i.NoopPostDispatchHookHandler
 
 	BeforeEach(func() {
 		s = i.NewCleanChain()
@@ -66,7 +68,10 @@ var _ = Describe("msg_server.go", Ordered, func() {
 		sender = i.GenerateTestValidatorAddress("Sender")
 		err := s.MintBaseCoins(owner.Address, 1_000_000)
 		Expect(err).To(BeNil())
-		_ = sender // TODO REMOVE
+
+		noopPostDispatchHandler = i.CreateNoopDispatchHookHandler(s.App().HyperlaneKeeper.PostDispatchRouter())
+		_, err = noopPostDispatchHandler.CreateHook(s.Ctx())
+		Expect(err).To(BeNil())
 	})
 
 	It("MsgCreateSyntheticToken (invalid) invalid Mailbox ID", func() {
@@ -1222,7 +1227,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 			Amount:            math.ZeroInt(),
 			IgpId:             "",
 			GasLimit:          math.ZeroInt(),
-			MaxFee:            math.ZeroInt(),
+			MaxFee:            sdk.NewCoin(denom, math.ZeroInt()),
 		})
 
 		// Assert
@@ -1242,7 +1247,7 @@ var _ = Describe("msg_server.go", Ordered, func() {
 			Amount:            math.ZeroInt(),
 			IgpId:             "",
 			GasLimit:          math.ZeroInt(),
-			MaxFee:            math.ZeroInt(),
+			MaxFee:            sdk.NewCoin(denom, math.ZeroInt()),
 		})
 
 		// Assert
@@ -1252,13 +1257,13 @@ var _ = Describe("msg_server.go", Ordered, func() {
 
 // Utils
 func createIgp(s *i.KeeperTestSuite, creator string) util.HexAddress {
-	res, err := s.RunTx(&coreTypes.MsgCreateIgp{
+	res, err := s.RunTx(&pdTypes.MsgCreateIgp{
 		Owner: creator,
 		Denom: denom,
 	})
 	Expect(err).To(BeNil())
 
-	var response coreTypes.MsgCreateIgpResponse
+	var response pdTypes.MsgCreateIgpResponse
 	err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
 	Expect(err).To(BeNil())
 
@@ -1266,6 +1271,23 @@ func createIgp(s *i.KeeperTestSuite, creator string) util.HexAddress {
 	Expect(err).To(BeNil())
 
 	return igpId
+}
+
+func createMerkleHook(s *i.KeeperTestSuite, creator string, mailboxId string) util.HexAddress {
+	res, err := s.RunTx(&pdTypes.MsgCreateMerkleTreeHook{
+		Owner:     creator,
+		MailboxId: mailboxId,
+	})
+	Expect(err).To(BeNil())
+
+	var response pdTypes.MsgCreateMerkleTreeHookResponse
+	err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
+	Expect(err).To(BeNil())
+
+	hookId, err := util.DecodeHexAddress(response.Id)
+	Expect(err).To(BeNil())
+
+	return hookId
 }
 
 func createValidMailbox(s *i.KeeperTestSuite, creator string, ism string, igpRequired bool, destinationDomain uint32) (util.HexAddress, util.HexAddress, util.HexAddress) {
@@ -1283,14 +1305,32 @@ func createValidMailbox(s *i.KeeperTestSuite, creator string, ism string, igpReq
 	Expect(err).To(BeNil())
 
 	res, err := s.RunTx(&coreTypes.MsgCreateMailbox{
-		Creator:    creator,
+		Owner:      creator,
 		DefaultIsm: ismId.String(),
-		Igp: &coreTypes.InterchainGasPaymaster{
-			Id:       igpId.String(),
-			Required: igpRequired,
-		},
 	})
 	Expect(err).To(BeNil())
+
+	var response coreTypes.MsgCreateMailboxResponse
+	err = proto.Unmarshal(res.MsgResponses[0].Value, &response)
+	Expect(err).To(BeNil())
+	mailboxId, err := util.DecodeHexAddress(response.Id)
+	Expect(err).To(BeNil())
+
+	merkleHook := createMerkleHook(s, creator, mailboxId.String())
+
+	_, err = s.RunTx(&coreTypes.MsgSetMailbox{
+		Owner:        creator,
+		MailboxId:    mailboxId.String(),
+		DefaultIsm:   ismId.String(),
+		DefaultHook:  igpId.String(),
+		RequiredHook: merkleHook.String(),
+		NewOwner:     creator,
+	})
+	Expect(err).To(BeNil())
+
+	if err != nil {
+		return [32]byte{}, [32]byte{}, [32]byte{}
+	}
 
 	return verifyNewMailbox(s, res, creator, igpId.String(), ismId.String(), igpRequired), igpId, ismId
 }
@@ -1334,12 +1374,12 @@ func createNoopIsm(s *i.KeeperTestSuite, creator string) util.HexAddress {
 }
 
 func setDestinationGasConfig(s *i.KeeperTestSuite, creator string, igpId string, domain uint32) error {
-	_, err := s.RunTx(&coreTypes.MsgSetDestinationGasConfig{
+	_, err := s.RunTx(&pdTypes.MsgSetDestinationGasConfig{
 		Owner: creator,
 		IgpId: igpId,
-		DestinationGasConfig: &coreTypes.DestinationGasConfig{
+		DestinationGasConfig: &pdTypes.DestinationGasConfig{
 			RemoteDomain: domain,
-			GasOracle: &coreTypes.GasOracle{
+			GasOracle: &pdTypes.GasOracle{
 				TokenExchangeRate: math.NewInt(1e10),
 				GasPrice:          math.NewInt(1),
 			},
@@ -1359,22 +1399,22 @@ func verifyNewMailbox(s *i.KeeperTestSuite, res *sdk.Result, creator, igpId, ism
 
 	mailbox, err := s.App().HyperlaneKeeper.Mailboxes.Get(s.Ctx(), mailboxId.Bytes())
 	Expect(err).To(BeNil())
-	Expect(mailbox.Creator).To(Equal(creator))
-	Expect(mailbox.Igp.Id).To(Equal(igpId))
+	Expect(mailbox.Owner).To(Equal(creator))
 	Expect(mailbox.DefaultIsm).To(Equal(ismId))
 	Expect(mailbox.MessageSent).To(Equal(uint32(0)))
 	Expect(mailbox.MessageReceived).To(Equal(uint32(0)))
+	Expect(mailbox.DefaultHook).To(Equal(igpId))
 
-	if igpRequired {
-		Expect(mailbox.Igp.Required).To(BeTrue())
-	} else {
-		Expect(mailbox.Igp.Required).To(BeFalse())
-	}
+	//if igpRequired {
+	//	Expect(mailbox.Igp.Required).To(BeTrue()) TODO
+	//} else {
+	//	Expect(mailbox.Igp.Required).To(BeFalse())
+	//}
 
 	mailboxes, err := coreKeeper.NewQueryServerImpl(s.App().HyperlaneKeeper).Mailboxes(s.Ctx(), &coreTypes.QueryMailboxesRequest{})
 	Expect(err).To(BeNil())
 	Expect(mailboxes.Mailboxes).To(HaveLen(1))
-	Expect(mailboxes.Mailboxes[0].Creator).To(Equal(creator))
+	Expect(mailboxes.Mailboxes[0].Owner).To(Equal(creator))
 
 	return mailboxId
 }

@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"context"
 	"fmt"
 
 	"cosmossdk.io/collections"
@@ -11,7 +12,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func (k *Keeper) RemoteTransferCollateral(ctx sdk.Context, token types.HypToken, cosmosSender string, destinationDomain uint32, externalRecipient string, amount math.Int, customIgpId string, gasLimit math.Int, maxFee math.Int) (messageId util.HexAddress, err error) {
+func (k *Keeper) RemoteTransferCollateral(ctx sdk.Context, token types.HypToken, cosmosSender string, destinationDomain uint32, externalRecipient string, amount math.Int, customIgpId string, gasLimit math.Int, maxFee sdk.Coin) (messageId util.HexAddress, err error) {
 	senderAcc, err := sdk.AccAddressFromBech32(cosmosSender)
 	if err != nil {
 		return util.HexAddress{}, err
@@ -57,18 +58,34 @@ func (k *Keeper) RemoteTransferCollateral(ctx sdk.Context, token types.HypToken,
 		return util.HexAddress{}, err
 	}
 
+	igpCustomHookId := util.NewZeroAddress()
+	if customIgpId != "" {
+
+		igpCustomHookId, err = util.DecodeHexAddress(customIgpId)
+		if err != nil {
+			return util.HexAddress{}, err
+		}
+	}
+
 	// Token destinationDomain, recipientAddress
-	dispatchMsg, err := k.mailboxKeeper.DispatchMessage(
+	dispatchMsg, err := k.coreKeeper.DispatchMessage(
 		ctx,
 		util.HexAddress(token.OriginMailbox),
+		util.HexAddress(token.Id), // sender
+		sdk.NewCoins(maxFee),
+
 		remoteRouter.ReceiverDomain,
 		receiverContract,
-		k.GetAddressFromToken(token),
-		warpPayload.Bytes(),
-		cosmosSender,
-		customIgpId,
-		gas,
-		maxFee,
+
+		warpPayload.Bytes(), // message body
+
+		util.StandardHookMetadata{
+			Variant:  1,
+			Value:    maxFee.Amount,
+			GasLimit: gas,
+			Address:  senderAcc,
+		}.Bytes(), // metadata for gas payment
+		igpCustomHookId,
 	)
 	if err != nil {
 		return util.HexAddress{}, err
@@ -77,7 +94,7 @@ func (k *Keeper) RemoteTransferCollateral(ctx sdk.Context, token types.HypToken,
 	return dispatchMsg, nil
 }
 
-func (k *Keeper) RemoteReceiveCollateral(ctx sdk.Context, token types.HypToken, payload types.WarpPayload) error {
+func (k *Keeper) RemoteReceiveCollateral(ctx context.Context, token types.HypToken, payload types.WarpPayload) error {
 	account := sdk.AccAddress(payload.Recipient()[12:32])
 
 	amount := math.NewIntFromBigInt(payload.Amount())
