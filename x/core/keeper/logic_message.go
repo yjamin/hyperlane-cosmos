@@ -32,6 +32,10 @@ func (k Keeper) ProcessMessage(
 	}
 	mailbox.MessageReceived++
 
+	if message.Destination != mailbox.LocalDomain {
+		return fmt.Errorf("message destination %v does not match local domain %v", message.Destination, mailbox.LocalDomain)
+	}
+
 	err = k.Mailboxes.Set(ctx, mailboxId.GetInternalId(), mailbox)
 	if err != nil {
 		return err
