@@ -25,4 +25,6 @@ message GenesisValidatorStorageLocationWrapper {
   uint64 index = 3;
 
   string storage_location = 4;
+
+  string storage_location2 = 5;
 }
